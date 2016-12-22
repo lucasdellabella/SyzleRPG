@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import rpg.syzle.SyzleRPG;
 
@@ -13,6 +15,7 @@ import rpg.syzle.SyzleRPG;
 public class MainMenuScreen implements Screen {
 
     final SyzleRPG game;
+    private Viewport viewport;
 
     private OrthographicCamera camera;
 
@@ -21,6 +24,10 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+        viewport = new FitViewport(800, 480, camera);
+        viewport.apply();
+
+        camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
     }
 
     @Override
@@ -49,7 +56,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
+        camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
     }
 
     @Override

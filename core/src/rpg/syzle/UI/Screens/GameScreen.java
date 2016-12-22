@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import rpg.syzle.SyzleRPG;
 
@@ -28,10 +30,10 @@ public class GameScreen implements Screen {
     private Music ambientMusic;
 
     private OrthographicCamera camera;
+    private Viewport viewport;
 
     private Rectangle playerRect;
     private Rectangle enemyRect;
-
 
     public GameScreen(final SyzleRPG game) {
         this.game = game;
@@ -61,6 +63,10 @@ public class GameScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+        viewport = new FitViewport(800, 480, camera);
+        viewport.apply();
+
+        camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
     }
 
     @Override
@@ -93,11 +99,19 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.UP)) playerRect.y += 200 * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) playerRect.y -= 200 * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) { attackSound.play(); }
+
+        System.out.println(camera.position);
+
+        camera.position.x = playerRect.getX();
+        camera.position.y = playerRect.getY();
+
+        System.out.println(camera.position);
     }
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
+        camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
     }
 
     @Override
