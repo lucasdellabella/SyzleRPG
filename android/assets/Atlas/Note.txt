@@ -1,0 +1,1 @@
+All four atlases are 1024x1024 pixels, and each tile is 32x32 pixels.
