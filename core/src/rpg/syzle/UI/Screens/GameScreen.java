@@ -101,12 +101,8 @@ public class GameScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) playerRect.y -= 200 * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) { attackSound.play(); }
 
-        System.out.println(camera.position);
-
         camera.position.x = playerRect.getX();
         camera.position.y = playerRect.getY();
-
-        System.out.println(camera.position);
     }
 
     @Override
