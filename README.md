@@ -14,7 +14,8 @@ To be able to test the application on your desktop
 ##### Code
 - [ ] Create some enemies
 - [ ] Create some items
-- [ ] Dungeon generation
+- [ ] Dungeon generation, Layer 1: Walls
+- [ ] Dungeon generation, Layer 2: Enemies + Objects
 
 ##### Design
 - [ ] Have design discussion Skype session
