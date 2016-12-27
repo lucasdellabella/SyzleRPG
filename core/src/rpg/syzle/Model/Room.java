@@ -7,6 +7,7 @@ import rpg.syzle.SyzleRPG;
 import static rpg.syzle.Constants.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +26,7 @@ public class Room implements MyDrawable {
     public int height;
 
     public Vector2 center;
+    public List<Corridor> corridors;
 
     public Room(SyzleRPG game, int x, int y, int width, int height) {
         super();

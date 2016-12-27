@@ -1,11 +1,14 @@
 package rpg.syzle.ProcGen;
 
 import com.badlogic.gdx.math.MathUtils;
+import rpg.syzle.Model.Corridor;
 import rpg.syzle.Model.Room;
 import rpg.syzle.SyzleRPG;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+
 import static rpg.syzle.Constants.*;
 
 /**
@@ -41,6 +44,26 @@ public class DungeonGenerator {
         return rooms;
     }
 
+
+    /**
+     * Gives rooms corridors to their closest 1 to 3 other rooms
+     * @param game
+     */
+    public void createCorridors(SyzleRPG game) {
+        for (Room curRoom: rooms) {
+            // Every room gets between 1 and 3 corridors to other rooms.
+            int numCorridors = MathUtils.random(1, 3);
+            for (int i = 0; i < numCorridors; i++) {
+                List<Room> closestRooms = findClosestRooms(curRoom, numCorridors);
+                for (Room closeRoom: closestRooms) {
+                    Corridor newCorridor = new Corridor(game, curRoom, closeRoom);
+                    curRoom.corridors.add(newCorridor);
+                    closeRoom.corridors.add(newCorridor);
+                }
+            }
+        }
+    }
+
     private boolean overlapsNoOtherRoom(Room newRoom) {
         // finds whether our room intersects with any other room
         boolean intersection = false;
@@ -52,5 +75,24 @@ public class DungeonGenerator {
         }
 
         return !intersection;
+    }
+
+    // Runs n times (once for each room) in order to
+    private List<Room> findClosestRooms(Room room, int numRooms) {
+        // Comparator cares about distance from r1/r2 to our 'base' room
+        PriorityQueue<Room> closestRoomsPQ = new PriorityQueue<>(
+                (Room r1, Room r2) -> (int) (distance(r1, room) - distance(r2, room)));
+        closestRoomsPQ.addAll(rooms);
+
+        // return `numRooms` closestRooms
+        List<Room> closestRoomsList = new ArrayList<>();
+        for (int i = 0; i < numRooms; i++) {
+            closestRoomsList.add(closestRoomsPQ.poll());
+        }
+        return closestRoomsList;
+    }
+
+    private double distance(Room r1, Room r2) {
+        return Math.sqrt((r1.x1 - r2.x1) * (r1.x1 - r2.x1) + (r1.y1 - r1.y2) * (r1.y1 - r1.y2));
     }
 }
