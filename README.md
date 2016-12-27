@@ -12,12 +12,11 @@ To be able to test the application on your desktop
 ### TODO
 
 ##### Code
-- [ ] Create some enemies
-- [ ] Create some items
-- [ ] Dungeon generation, Layer 1: Walls
+- [ ] Dungeon generation, Layer 1: Walls + Corridors
 - [ ] Dungeon generation, Layer 2: Enemies + Objects
+- [ ] Make room and corridor generation based on a set of points, so that rooms and corridors can vary in size.
+- [ ] Refactor code to be using getters and setters
 
 ##### Design
 - [ ] Have design discussion Skype session
 - [ ] Come up with a menu format
-- [ ] Basically everything

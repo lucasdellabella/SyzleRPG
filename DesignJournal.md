@@ -34,5 +34,9 @@ My next step: generate rooms with walls. Probably use libgdx's TileMap.
 ## December 26th, 2016
 #### Lucas
 
-Want to figure out how to best to draw Rooms and the Dungeon as a whole. Maybe Dungeon class with list of Rooms, all of
-which can be drawn
+Pt. 1: Want to figure out how to best to draw Rooms and the Dungeon as a whole. Maybe Dungeon class with list of Rooms, all of
+which can be drawn.
+
+Pt. 2: These rain effects is the perfect white noise to code to. This is great.
+
+
