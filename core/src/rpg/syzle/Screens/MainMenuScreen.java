@@ -1,4 +1,4 @@
-package rpg.syzle.UI.Screens;
+package rpg.syzle.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

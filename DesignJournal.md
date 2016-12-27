@@ -31,3 +31,8 @@ that takes me. I haven't even put the walls in place yet!
 
 My next step: generate rooms with walls. Probably use libgdx's TileMap.
 
+## December 26th, 2016
+#### Lucas
+
+Want to figure out how to best to draw Rooms and the Dungeon as a whole. Maybe Dungeon class with list of Rooms, all of
+which can be drawn

@@ -1,4 +1,4 @@
-package rpg.syzle.UI.Screens;
+package rpg.syzle.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import rpg.syzle.SyzleRPG;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by lucasdellabella on 12/23/16.
@@ -23,13 +26,28 @@ public class TextureFunScreen implements Screen {
 
     private Texture texture;
     private SpriteBatch batch;
-    private TextureRegion[][] regions;
+    private TextureRegion[][] spriteMatrix;
+    private Map<String, TextureRegion> regions = new HashMap<String, TextureRegion>();
 
     public TextureFunScreen(SyzleRPG game) {
         this.game = game;
 
-        texture = new Texture(Gdx.files.internal("Atlas/build_atlas.png"));
+        texture = new Texture(Gdx.files.internal("Atlas/base_out_atlas.png"));
         batch = new SpriteBatch();
+
+        spriteMatrix = TextureRegion.split(texture, 32, 32);
+
+        // build mapping for parts of a wall
+        int rowCenter = 3;
+        int colCenter = 25;
+        regions.put("nwall", spriteMatrix[rowCenter + 1][colCenter]);
+        regions.put("swall", spriteMatrix[rowCenter - 1][colCenter]);
+        regions.put("wwall", spriteMatrix[rowCenter][colCenter + 1]);
+        regions.put("ewall", spriteMatrix[rowCenter][colCenter - 1]);
+        regions.put("nwwall", spriteMatrix[rowCenter + 1][colCenter - 1]);
+        regions.put("newall", spriteMatrix[rowCenter + 1][colCenter + 1]);
+        regions.put("swwall", spriteMatrix[rowCenter - 1][colCenter - 1]);
+        regions.put("sewall", spriteMatrix[rowCenter - 1][colCenter + 1]);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -41,21 +59,15 @@ public class TextureFunScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(0.9f, 0.9f, 0.9f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        regions = TextureRegion.split(texture, 32, 32);
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        //batch.draw(texture, 0, 0, 64, 64);              // #7
-        for (int row = 0; row < regions.length; row++) {
-            for (int col = 0; col < regions[0].length; col++) {
-                batch.draw(regions[row][col], 32 * (row + 1), 32 * (col + 1));      // #8
-            }
-        }
+        batch.draw(spriteMatrix[2][25], 0, 64, 64, 32);
+        batch.draw(spriteMatrix[4][25], 64, 64, 64, 32);
         batch.end();
     }
 

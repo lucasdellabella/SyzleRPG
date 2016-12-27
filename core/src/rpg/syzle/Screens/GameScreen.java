@@ -1,4 +1,4 @@
-package rpg.syzle.UI.Screens;
+package rpg.syzle.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import rpg.syzle.Model.Dungeon;
 import rpg.syzle.SyzleRPG;
 
 /**
@@ -32,27 +33,30 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
 
+    private Dungeon dungeon;
     private Rectangle playerRect;
     private Rectangle enemyRect;
 
     public GameScreen(final SyzleRPG game) {
         this.game = game;
+        dungeon = new Dungeon(game, 8);
+
         // load player and enemy images
         playerImage = new Texture(Gdx.files.internal("harold.jpg"));
         enemyImage = new Texture(Gdx.files.internal("harambe.jpg"));
 
         // set player and enemy rectangles
         playerRect = new Rectangle();
-        playerRect.x = 800 / 2 - 64 / 2;
+        playerRect.x = 800 / 2 - 32 / 2;
         playerRect.y = 20;
-        playerRect.width = 64;
-        playerRect.height = 64;
+        playerRect.width = 32;
+        playerRect.height = 32;
 
         enemyRect = new Rectangle();
-        enemyRect.x = 800 / 2 - 64 / 2;
+        enemyRect.x = 800 / 2 - 32 / 2;
         enemyRect.y = 480 / 2 - 20;
-        enemyRect.width = 75;
-        enemyRect.height = 75;
+        enemyRect.width = 32;
+        enemyRect.height = 32;
 
         // load sound effects
         attackSound = Gdx.audio.newSound(Gdx.files.internal("laser.wav"));
@@ -84,15 +88,14 @@ public class GameScreen implements Screen {
 
         // render images
         game.batch.begin();
+        dungeon.draw(game.batch);
         game.batch.draw(playerImage, playerRect.x, playerRect.y);
         game.batch.draw(enemyImage, enemyRect.x, enemyRect.y);
         game.batch.end();
 
         if(Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            playerRect.x = touchPos.x - 64 / 2;
+            dispose();
+            game.setScreen(new GameScreen(game));
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) playerRect.x += 200 * Gdx.graphics.getDeltaTime();
