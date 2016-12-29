@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import rpg.syzle.Model.Dungeon;
+import rpg.syzle.Model.Player;
 import rpg.syzle.SyzleRPG;
 
 /**
@@ -25,32 +26,24 @@ public class GameScreen implements Screen {
 
     final SyzleRPG game;
 
-    private Texture playerImage;
     private Texture enemyImage;
-    private Sound attackSound;
     private Music ambientMusic;
+    private Player player;
 
     private OrthographicCamera camera;
     private Viewport viewport;
 
     private Dungeon dungeon;
-    private Rectangle playerRect;
     private Rectangle enemyRect;
 
     public GameScreen(final SyzleRPG game) {
         this.game = game;
         dungeon = new Dungeon(game, 8);
 
-        // load player and enemy images
-        playerImage = new Texture(Gdx.files.internal("harold.jpg"));
-        enemyImage = new Texture(Gdx.files.internal("harambe.jpg"));
+        player = new Player();
 
-        // set player and enemy rectangles
-        playerRect = new Rectangle();
-        playerRect.x = 800 / 2 - 32 / 2;
-        playerRect.y = 20;
-        playerRect.width = 32;
-        playerRect.height = 32;
+        // load player and enemy images
+        enemyImage = new Texture(Gdx.files.internal("harambe.jpg"));
 
         enemyRect = new Rectangle();
         enemyRect.x = 800 / 2 - 32 / 2;
@@ -59,7 +52,6 @@ public class GameScreen implements Screen {
         enemyRect.height = 32;
 
         // load sound effects
-        attackSound = Gdx.audio.newSound(Gdx.files.internal("laser.wav"));
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
 
         // start music
@@ -89,8 +81,8 @@ public class GameScreen implements Screen {
         // render images
         game.batch.begin();
         dungeon.draw(game.batch);
-        game.batch.draw(playerImage, playerRect.x, playerRect.y);
-        game.batch.draw(enemyImage, enemyRect.x, enemyRect.y);
+        player.draw(game.batch);
+        //game.batch.draw(enemyImage, enemyRect.x, enemyRect.y);
         game.batch.end();
 
         if(Gdx.input.isTouched()) {
@@ -98,14 +90,13 @@ public class GameScreen implements Screen {
             game.setScreen(new GameScreen(game));
         }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) playerRect.x += 200 * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) playerRect.x -= 200 * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)) playerRect.y += 200 * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) playerRect.y -= 200 * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) { attackSound.play(); }
+        // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
+        //   and inconsistencies. Render first, update state afterwards.
 
-        camera.position.x = playerRect.getX();
-        camera.position.y = playerRect.getY();
+        player.move();
+
+        camera.position.x = player.getX() + player.getWidth() / 2;
+        camera.position.y = player.getY() + player.getHeight() / 2;
     }
 
     @Override
@@ -131,9 +122,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        playerImage.dispose();
+        player.dispose();
         enemyImage.dispose();
-        attackSound.dispose();
         ambientMusic.dispose();
     }
 }
