@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import rpg.syzle.SyzleRPG;
 
+import static rpg.syzle.Constants.SCREEN_HEIGHT;
+import static rpg.syzle.Constants.SCREEN_WIDTH;
+
 /**
  * Created by lucasdellabella on 12/20/16.
  */
@@ -23,8 +26,8 @@ public class MainMenuScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-        viewport = new FitViewport(800, 480, camera);
+        camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
         viewport.apply();
 
         camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);

@@ -1,19 +1,17 @@
 package rpg.syzle.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import static rpg.syzle.Constants.SCREEN_WIDTH;
+import static rpg.syzle.Constants.SCREEN_HEIGHT;
 import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Player;
 import rpg.syzle.SyzleRPG;
@@ -46,8 +44,8 @@ public class GameScreen implements Screen {
         enemyImage = new Texture(Gdx.files.internal("harambe.jpg"));
 
         enemyRect = new Rectangle();
-        enemyRect.x = 800 / 2 - 32 / 2;
-        enemyRect.y = 480 / 2 - 20;
+        enemyRect.x = SCREEN_WIDTH / 2 - 32 / 2;
+        enemyRect.y = SCREEN_HEIGHT / 2 - 20;
         enemyRect.width = 32;
         enemyRect.height = 32;
 
@@ -58,8 +56,8 @@ public class GameScreen implements Screen {
         ambientMusic.setLooping(true);
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
-        viewport = new FitViewport(800, 480, camera);
+        camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
         viewport.apply();
 
         camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
@@ -85,15 +83,16 @@ public class GameScreen implements Screen {
         //game.batch.draw(enemyImage, enemyRect.x, enemyRect.y);
         game.batch.end();
 
-        if(Gdx.input.isTouched()) {
-            dispose();
-            game.setScreen(new GameScreen(game));
-        }
+//        if(Gdx.input.isTouched()) {
+//            dispose();
+//            game.setScreen(new GameScreen(game));
+//        }
 
         // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
         //   and inconsistencies. Render first, update state afterwards.
 
         player.move();
+        player.attack();
 
         camera.position.x = player.getX() + player.getWidth() / 2;
         camera.position.y = player.getY() + player.getHeight() / 2;
