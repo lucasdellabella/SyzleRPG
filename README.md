@@ -20,6 +20,7 @@ the SpriteBatch finishes drawing.
 - [ ] Dungeon generation, Layer 2: Enemies + Objects
 - [ ] Make room and corridor generation based on a set of points, so that rooms and corridors can vary in size.
 - [ ] Refactor code to be using getters and setters
+- [ ] Remove bullet from game once it has left the screen
 
 ##### Design
 - [ ] Have design discussion Skype session
