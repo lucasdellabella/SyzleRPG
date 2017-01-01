@@ -63,3 +63,9 @@ I draw the bullets on the screen using the draw method of the character. Thus to
 I want bullets to act upon whatever they collide with themselves. In that case I need to be able to remove the bullet from the game using the bullet class.
 Clearly I need a way to remove the reference the player has to the bullet. Maybe it is simply better to not  GIVE the player a reference to the bullet.
 A bullet is a bullet once it's on it's own. We still need to be able to reference all the bullets so maybe instead we have some massive static set of bullets in the bullet class.
+
+## January 1st, 2017
+#### Lucas
+
+I really like functions that do some kind of check on state, do something if the conditions are right, and return
+a boolean based on whether the important contents within the function occurred. (see collide in Body)

@@ -32,12 +32,15 @@ public abstract class Body extends CollidableSprite implements Disposable, MyDra
     }
 
     // TODO: collide should somehow belong in the CollidableSprite abstract class.
-    public void collide(Bullet bullet) {
+    public boolean collide(Bullet bullet) {
         Rectangle intersection = overlaps(bullet);
-        if (intersection.getHeight() != 0 || intersection.getWidth() != 0) {
+        boolean intersects = intersection.getHeight() != 0 || intersection.getWidth() != 0;
+        if (intersects) {
             takeDamage(bullet.getDamage());
             bullet.remove();
         }
+        return intersects;
+
     }
 
     public abstract void attack();
@@ -49,6 +52,11 @@ public abstract class Body extends CollidableSprite implements Disposable, MyDra
     public void takeDamage(int damage) {
         this.hp = hp - damage;
     }
+
+    public boolean isDead() {
+        return getHp() <= 0;
+    }
+
     @Override
     public void draw(Batch batch) {
         batch.draw(getTexture(), getX(), getY(), getWidth(), getHeight());

@@ -86,15 +86,21 @@ public class GameScreen implements Screen {
 
         player.move();
         player.attack();
-        enemy.move();
-        enemy.attack();
-
         for (Bullet bullet: enemy.bullets) {
             player.collide(bullet);
         }
+        if (player.isDead()) {
+            resetLevel();
+        }
 
+
+        enemy.move();
+        enemy.attack();
         for (Bullet bullet: player.bullets) {
             enemy.collide(bullet);
+        }
+        if (enemy.isDead()) {
+            resetLevel();
         }
 
         camera.position.x = player.getX() + player.getWidth() / 2;
@@ -127,5 +133,10 @@ public class GameScreen implements Screen {
         player.dispose();
         enemy.dispose();
         ambientMusic.dispose();
+    }
+
+    public void resetLevel() {
+        dispose();
+        game.setScreen(new GameScreen(game));
     }
 }
