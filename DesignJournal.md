@@ -67,5 +67,6 @@ A bullet is a bullet once it's on it's own. We still need to be able to referenc
 ## January 1st, 2017
 #### Lucas
 
-I really like functions that do some kind of check on state, do something if the conditions are right, and return
-a boolean based on whether the important contents within the function occurred. (see collide in Body)
+I like functions that do some kind of check on state, do something if the conditions are right, and return
+a boolean based on whether that something was done or not. (see collide in Body) However, I think there is a better way
+to go about doing this.

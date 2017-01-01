@@ -1,11 +1,10 @@
 package rpg.syzle;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.Application.ApplicationType;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import rpg.syzle.Screens.GameScreen;
@@ -19,7 +18,6 @@ public class SyzleRPG extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		// TODO: Update InputAdapter to be custom InputProcessor
-		Gdx.input.setInputProcessor(new InputAdapter());
 
 		// Set our sprite matrix
 		Texture spriteBaseAtlas = new Texture(Gdx.files.internal("Atlas/base_out_atlas.png"));

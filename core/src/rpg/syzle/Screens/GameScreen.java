@@ -1,17 +1,18 @@
 package rpg.syzle.Screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import static com.badlogic.gdx.Gdx.app;
 import static rpg.syzle.Constants.SCREEN_WIDTH;
 import static rpg.syzle.Constants.SCREEN_HEIGHT;
 
+import rpg.syzle.Input.AndroidGameInputProcessor;
+import rpg.syzle.Input.DesktopGameInputProcessor;
 import rpg.syzle.Model.Bullet;
 import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
@@ -41,6 +42,30 @@ public class GameScreen implements Screen {
 
         player = new Player();
         enemy = new Enemy(player);
+
+        // Do application based setup
+        Application.ApplicationType appType = app.getType();
+        switch (appType) {
+            case Android:
+                Gdx.input.setInputProcessor(new AndroidGameInputProcessor(player));
+                break;
+            case Desktop:
+                Gdx.input.setInputProcessor(new DesktopGameInputProcessor(player));
+                break;
+            case HeadlessDesktop:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case Applet:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case WebGL:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case iOS:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+        }
+
 
         // load sound effects
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));

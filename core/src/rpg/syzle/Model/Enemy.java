@@ -30,7 +30,7 @@ public class Enemy extends Body {
         currentAttackPattern = -1;
         attackPatternTicks = 1;
         attackPatternBulletFrequencies = new float[]{0.2f, 0.3f};
-        setBounds(30, 30, 32, 32);
+        setBounds(100, 50, 32, 32);
     }
 
     // Neat way to get elastic movement is to have the distance between two things be used as the speed.
