@@ -26,10 +26,11 @@ public class Enemy extends Body {
         super(new Texture(Gdx.files.internal("harambe.jpg")));
         this.player = player;
         moveSpeed = 1;
+        hp = 10;
         currentAttackPattern = -1;
         attackPatternTicks = 1;
         attackPatternBulletFrequencies = new float[]{0.2f, 0.3f};
-        setBounds(10, 10, 32, 32);
+        setBounds(30, 30, 32, 32);
     }
 
     // Neat way to get elastic movement is to have the distance between two things be used as the speed.
@@ -59,6 +60,7 @@ public class Enemy extends Body {
                     Vector2 direction = new Vector2(1, 0);
                     direction.rotateRad(i * MathUtils.PI/4);
                     Bullet bullet = new Bullet(new Texture(Gdx.files.internal("bullet.png")),
+                            this,
                             new Vector2(getX() + getWidth() / 2, getY() - getHeight() / 2),
                             direction,
                             5f);
@@ -72,6 +74,7 @@ public class Enemy extends Body {
                     Vector2 direction = new Vector2(1, 0);
                     direction.rotateRad(i * MathUtils.PI/8);
                     Bullet bullet = new Bullet(new Texture(Gdx.files.internal("bullet.png")),
+                            this,
                             new Vector2(getX() + getWidth() / 2, getY() - getHeight() / 2),
                             direction,
                             5f);

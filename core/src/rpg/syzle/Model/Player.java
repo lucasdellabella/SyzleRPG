@@ -5,10 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
+import org.w3c.dom.css.Rect;
 
 import java.sql.Time;
 
@@ -25,6 +27,7 @@ public class Player extends Body {
     public Player() {
         super(new Texture(Gdx.files.internal("harold.jpg")));
         moveSpeed = 1;
+        hp = 5;
 //        setBounds(800 / 2 - 32 / 2, 480 / 2 - 32 / 2, 32, 32);
         setBounds(0, 0, 32, 32);
     }
@@ -48,6 +51,7 @@ public class Player extends Body {
             System.out.print("blabla");
             Vector2 direction = new Vector2(Gdx.input.getX() - SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2 - Gdx.input.getY());
             Bullet bullet = new Bullet(new Texture(Gdx.files.internal("bullet.png")),
+                    this,
                     new Vector2(getX() + getWidth() / 2, getY() - getHeight() / 2),
                     direction,
                     5f);
@@ -55,4 +59,5 @@ public class Player extends Body {
             lastAttackTime = curTime;
         }
     }
+
 }

@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static rpg.syzle.Constants.SCREEN_WIDTH;
 import static rpg.syzle.Constants.SCREEN_HEIGHT;
+
+import rpg.syzle.Model.Bullet;
 import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
@@ -86,6 +88,14 @@ public class GameScreen implements Screen {
         player.attack();
         enemy.move();
         enemy.attack();
+
+        for (Bullet bullet: enemy.bullets) {
+            player.collide(bullet);
+        }
+
+        for (Bullet bullet: player.bullets) {
+            enemy.collide(bullet);
+        }
 
         camera.position.x = player.getX() + player.getWidth() / 2;
         camera.position.y = player.getY() + player.getHeight() / 2;
