@@ -26,6 +26,9 @@ To be able to test the application on your desktop
 - [ ] Make room and corridor generation based on a set of points, so that rooms and corridors can vary in size.
 - [ ] Refactor code to be using getters and setters
 
+###### Longer Term
+- [ ] Set up some system to allow us to assign a CollidableSprite a hitbox
+
 #### Design
 - [ ] Build a flexible FSM / system for enemy behaviors
 - [ ] HOW do we want to do `Dungeon generation, Layer 1`

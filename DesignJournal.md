@@ -39,4 +39,27 @@ which can be drawn.
 
 Pt. 2: These rain effects is the perfect white noise to code to. This is great.
 
+## December 31st, 2016
+#### Lucas
 
+Sometime in the past five days I got a lot of the MVP done. Was pretty easy surprisingly, which was nice. More likely
+maybe I was just well rested and focusing well. Current goal today is to get collision detection into the game - that
+means collision detection between bodies, bullets, walls, etc. The whole shebang.
+
+I wanted to do this via a Collidable interface that is every body has, but then I would have to write some custom collision code which seems
+really obnoxious as libgdx already has this done for me.
+
+---
+
+Ok talked to Jay looks like going with another Abstract class is probably the correct call. Does certainly make things easy.
+
+On another note, going to start a style rules doc so things are consistent once Joe starts working.
+
+Because I have to check for collisions between bullets and walls, or maybe inanimate objects and walls,
+it's best if I can just check for collisions against everything.
+
+I need to remove bullets from the game based on certain events. Each game character (player || enemy) has an array of their bullets.
+I draw the bullets on the screen using the draw method of the character. Thus to remove the bullet from the screen I need to remove the bullet from that characters array.
+I want bullets to act upon whatever they collide with themselves. In that case I need to be able to remove the bullet from the game using the bullet class.
+Clearly I need a way to remove the reference the player has to the bullet. Maybe it is simply better to not  GIVE the player a reference to the bullet.
+A bullet is a bullet once it's on it's own. We still need to be able to reference all the bullets so maybe instead we have some massive static set of bullets in the bullet class.
