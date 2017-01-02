@@ -3,6 +3,9 @@ package rpg.syzle;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import rpg.syzle.Components.BoundsComponent;
+import rpg.syzle.Components.MovementComponent;
+import rpg.syzle.Components.TextureComponent;
 
 /**
  * Created by joe on 1/2/17.
@@ -22,13 +25,25 @@ public class EntityCreator {
         return player;
     }
 
+
     public Entity createEnemy() {
         Entity enemy = engine.createEntity();
         return enemy;
     }
 
-    public Entity createBullet() {
+    public Void createBullet() {
         Entity bullet = engine.createEntity();
-        return bullet;
+
+        MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
+        BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
+        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+
+        // SET STATE OF COMPONENTS
+
+        bullet.add(movementComponent);
+        bullet.add(boundsComponent);
+        bullet.add(textureComponent);
+
+        engine.addEntity(bullet);
     }
 }
