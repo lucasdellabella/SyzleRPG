@@ -44,31 +44,9 @@ public class GameScreen implements Screen {
 
         player = new Player();
         enemy = new Enemy(player);
-
-        // Do application based setup
-        Application.ApplicationType appType = app.getType();
-        switch (appType) {
-            case Android:
-                Gdx.input.setInputProcessor(new AndroidGameInputProcessor(player));
-                break;
-            case Desktop:
-                Gdx.input.setInputProcessor(new DesktopGameInputProcessor(player));
-                break;
-            case HeadlessDesktop:
-                Gdx.input.setInputProcessor(new InputAdapter());
-                break;
-            case Applet:
-                Gdx.input.setInputProcessor(new InputAdapter());
-                break;
-            case WebGL:
-                Gdx.input.setInputProcessor(new InputAdapter());
-                break;
-            case iOS:
-                Gdx.input.setInputProcessor(new InputAdapter());
-                break;
-        }
-
         engine = new PooledEngine();
+
+        this.setInputProcessor();
 
         // load sound effects
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -166,5 +144,30 @@ public class GameScreen implements Screen {
     public void resetLevel() {
         dispose();
         game.setScreen(new GameScreen(game));
+    }
+
+    private void setInputProcessor() {
+        // Do application based setup
+        Application.ApplicationType appType = app.getType();
+        switch (appType) {
+            case Android:
+                Gdx.input.setInputProcessor(new AndroidGameInputProcessor(player));
+                break;
+            case Desktop:
+                Gdx.input.setInputProcessor(new DesktopGameInputProcessor(player));
+                break;
+            case HeadlessDesktop:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case Applet:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case WebGL:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+            case iOS:
+                Gdx.input.setInputProcessor(new InputAdapter());
+                break;
+        }
     }
 }
