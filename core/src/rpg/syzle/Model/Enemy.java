@@ -1,15 +1,10 @@
 package rpg.syzle.Model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-
-import static rpg.syzle.Constants.SCREEN_HEIGHT;
-import static rpg.syzle.Constants.SCREEN_WIDTH;
 
 /**
  * Created by lucasdellabella on 12/29/16.

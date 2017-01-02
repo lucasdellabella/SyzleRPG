@@ -6,7 +6,7 @@ import rpg.syzle.SyzleRPG;
 
 import java.util.ArrayList;
 import java.util.List;
-import static rpg.syzle.Constants.*;
+import static rpg.syzle.DungeonConstants.*;
 
 /**
  * Created by lucasdellabella on 12/23/16.

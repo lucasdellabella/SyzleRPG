@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import rpg.syzle.SyzleRPG;
 
-import static rpg.syzle.Constants.SCREEN_HEIGHT;
-import static rpg.syzle.Constants.SCREEN_WIDTH;
+import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
+import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
 
 /**
  * Created by lucasdellabella on 12/20/16.

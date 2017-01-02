@@ -1,13 +1,9 @@
 package rpg.syzle.Model;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import rpg.syzle.SyzleRPG;
-import static rpg.syzle.Constants.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import static rpg.syzle.DungeonConstants.*;
 
 /**
  * Created by lucasdellabella on 12/23/16.

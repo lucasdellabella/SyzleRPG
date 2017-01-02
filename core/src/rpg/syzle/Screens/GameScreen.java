@@ -1,5 +1,6 @@
 package rpg.syzle.Screens;
 
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,8 +9,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.Constants.SCREEN_WIDTH;
-import static rpg.syzle.Constants.SCREEN_HEIGHT;
+import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
+import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
 
 import rpg.syzle.Input.AndroidGameInputProcessor;
 import rpg.syzle.Input.DesktopGameInputProcessor;
@@ -33,6 +34,7 @@ public class GameScreen implements Screen {
 
     private OrthographicCamera camera;
     private Viewport viewport;
+    private PooledEngine engine;
 
     private Dungeon dungeon;
 
@@ -66,6 +68,7 @@ public class GameScreen implements Screen {
                 break;
         }
 
+        engine = new PooledEngine();
 
         // load sound effects
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));

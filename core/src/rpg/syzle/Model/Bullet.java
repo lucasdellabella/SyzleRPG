@@ -1,12 +1,11 @@
 package rpg.syzle.Model;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
-import static rpg.syzle.Constants.PLAYER_WIDTH;
-import static rpg.syzle.Constants.PLAYER_HEIGHT;
+import static rpg.syzle.DungeonConstants.PLAYER_WIDTH;
+import static rpg.syzle.DungeonConstants.PLAYER_HEIGHT;
 
 /**
  * Created by lucasdellabella on 12/29/16.
