@@ -1,5 +1,7 @@
 package rpg.syzle.Screens;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
@@ -12,6 +14,9 @@ import static com.badlogic.gdx.Gdx.app;
 import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
 import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
 
+import rpg.syzle.Components.PlayerComponent;
+import rpg.syzle.Components.TextureComponent;
+import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
 import rpg.syzle.Input.DesktopGameInputProcessor;
 import rpg.syzle.Model.Bullet;
@@ -30,11 +35,16 @@ public class GameScreen implements Screen {
 
     private Music ambientMusic;
     private Player player;
+    private Entity playerEntity;
     private Enemy enemy;
 
     private OrthographicCamera camera;
     private Viewport viewport;
     private PooledEngine engine;
+    private EntityCreator entityCreator;
+
+    private ComponentMapper<TextureComponent> textureMapper;
+    private ComponentMapper<PlayerComponent> playerMapper;
 
     private Dungeon dungeon;
 
@@ -44,14 +54,18 @@ public class GameScreen implements Screen {
 
         player = new Player();
         enemy = new Enemy(player);
+
         engine = new PooledEngine();
+        entityCreator = new EntityCreator(engine);
+        playerEntity = entityCreator.createPlayer();
+
+        textureMapper = ComponentMapper.getFor(TextureComponent.class);
+        playerMapper = ComponentMapper.getFor(PlayerComponent.class);
 
         this.setInputProcessor();
 
-        // load sound effects
+        // load sound effects and start music
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-
-        // start music
         ambientMusic.setLooping(true);
 
         camera = new OrthographicCamera();
@@ -80,6 +94,11 @@ public class GameScreen implements Screen {
         dungeon.draw(game.batch);
         player.draw(game.batch);
         enemy.draw(game.batch);
+
+        TextureComponent playerTextureComponent = textureMapper.get(playerEntity);
+        PlayerComponent playerComponent = playerMapper.get(playerEntity);
+        game.batch.draw(playerTextureComponent.region, 60, 60,
+                playerComponent.WIDTH, playerComponent.HEIGHT);
         game.batch.end();
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
@@ -98,7 +117,6 @@ public class GameScreen implements Screen {
         if (player.isDead()) {
             resetLevel();
         }
-
 
         enemy.move();
         enemy.attack();
