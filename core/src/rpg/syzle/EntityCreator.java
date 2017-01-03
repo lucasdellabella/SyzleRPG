@@ -33,6 +33,7 @@ public class EntityCreator {
         MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
         PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
         boundsComponent.rectangle.setSize(playerComponent.WIDTH, playerComponent.HEIGHT);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
@@ -43,6 +44,9 @@ public class EntityCreator {
         player.add(movementComponent);
         player.add(playerComponent);
         player.add(textureComponent);
+        player.add(transformComponent);
+
+        engine.addEntity(player);
 
         return player;
     }
@@ -67,10 +71,12 @@ public class EntityCreator {
         enemy.add(movementPatternComponent);
         enemy.add(textureComponent);
 
+        engine.addEntity(enemy);
+
         return enemy;
     }
 
-    public void createBullet() {
+    public Entity createBullet() {
         Entity bullet = engine.createEntity();
 
         MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
@@ -84,5 +90,7 @@ public class EntityCreator {
         bullet.add(textureComponent);
 
         engine.addEntity(bullet);
+
+        return bullet;
     }
 }

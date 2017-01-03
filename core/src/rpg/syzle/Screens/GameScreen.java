@@ -23,6 +23,7 @@ import rpg.syzle.Model.Bullet;
 import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
+import rpg.syzle.Systems.RenderingSystem;
 import rpg.syzle.SyzleRPG;
 
 /**
@@ -56,6 +57,10 @@ public class GameScreen implements Screen {
         enemy = new Enemy(player);
 
         engine = new PooledEngine();
+
+        RenderingSystem renderingSystem = new RenderingSystem(game.batch);
+        engine.addSystem(renderingSystem);
+
         entityCreator = new EntityCreator(engine);
         playerEntity = entityCreator.createPlayer();
 
@@ -68,12 +73,8 @@ public class GameScreen implements Screen {
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         ambientMusic.setLooping(true);
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
-        viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-        viewport.apply();
-
-        camera.position.set(camera.viewportWidth/2, camera.viewportHeight/2, 0);
+        camera = renderingSystem.getCamera();
+        viewport = renderingSystem.getViewport();
     }
 
     @Override
@@ -89,17 +90,17 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-        // render images
+        // ecs render sprites
+        // NOTE: to have ECS architecture rendered, comment out the non-esc render sprites section
+        engine.update(delta);
+
+        // non-ecs render sprites
         game.batch.begin();
         dungeon.draw(game.batch);
         player.draw(game.batch);
         enemy.draw(game.batch);
-
-        TextureComponent playerTextureComponent = textureMapper.get(playerEntity);
-        PlayerComponent playerComponent = playerMapper.get(playerEntity);
-        game.batch.draw(playerTextureComponent.region, 60, 60,
-                playerComponent.WIDTH, playerComponent.HEIGHT);
         game.batch.end();
+        //
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             dispose();
