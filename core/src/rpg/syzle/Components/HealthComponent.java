@@ -3,7 +3,6 @@ package rpg.syzle.Components;
 import com.badlogic.ashley.core.Component;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.sun.istack.internal.Pool;
 
 /**
  * Created by lucasdellabella on 1/2/17.

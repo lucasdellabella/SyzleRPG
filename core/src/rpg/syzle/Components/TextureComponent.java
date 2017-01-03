@@ -9,10 +9,10 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  */
 
 public class TextureComponent implements Component, Poolable {
-    public TextureRegion region = null;
+    public TextureRegion region = new TextureRegion();
 
     @Override
     public void reset() {
-        region = null;
+        region = new TextureRegion();
     }
 }

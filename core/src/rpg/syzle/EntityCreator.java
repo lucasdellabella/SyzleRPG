@@ -34,10 +34,8 @@ public class EntityCreator {
         PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
 
-        // TODO: don't instantiate new object after creating component.
-        boundsComponent.rectangle = new Rectangle(0, 0,
-                playerComponent.WIDTH, playerComponent.HEIGHT);
-        textureComponent.region = new TextureRegion(new Texture(Gdx.files.internal("harold.jpg")));
+        boundsComponent.rectangle.setSize(playerComponent.WIDTH, playerComponent.HEIGHT);
+        textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
 
         player.add(attackComponent);
         player.add(boundsComponent);
