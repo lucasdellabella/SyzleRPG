@@ -23,7 +23,6 @@ public class EntityCreator {
         this.engine = engine;
     }
 
-    // TODO: add components to player
     public Entity createPlayer() {
         Entity player = engine.createEntity();
 
@@ -37,6 +36,7 @@ public class EntityCreator {
 
         boundsComponent.rectangle.setSize(playerComponent.WIDTH, playerComponent.HEIGHT);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
+        movementComponent.moveSpeed = playerComponent.MOVE_SPEED;
 
         player.add(attackComponent);
         player.add(boundsComponent);

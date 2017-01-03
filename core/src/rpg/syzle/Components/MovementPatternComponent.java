@@ -11,10 +11,10 @@ import rpg.syzle.Constants.MOVEMENT_PATTERN;
  */
 
 public class MovementPatternComponent implements Component, Poolable {
-    public Array<MOVEMENT_PATTERN> attackPatterns = new Array<MOVEMENT_PATTERN>();
+    public Array<MOVEMENT_PATTERN> movementPatterns = new Array<MOVEMENT_PATTERN>();
 
     @Override
     public void reset() {
-        attackPatterns.clear();
+        movementPatterns.clear();
     }
 }
