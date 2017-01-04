@@ -12,9 +12,11 @@ import rpg.syzle.Constants.ATTACK_PATTERN;
 
 public class AttackPatternComponent implements Component, Poolable {
     public Array<ATTACK_PATTERN> attackPatterns = new Array<ATTACK_PATTERN>();
+    public int attackPatternTick = 0;
 
     @Override
     public void reset() {
         attackPatterns.clear();
+        attackPatternTick = 0;
     }
 }

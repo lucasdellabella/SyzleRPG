@@ -1,6 +1,7 @@
 package rpg.syzle.Components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
@@ -11,9 +12,10 @@ public class PlayerComponent implements Component, Poolable {
     public final int WIDTH = 32;
     public final int HEIGHT = 32;
     public int MOVE_SPEED = 150;
+    public Vector2 fireCoords = new Vector2();
 
     @Override
     public void reset() {
-        // Do nothing (WIDTH and HEIGHT are constants)
+        fireCoords.set(0, 0);
     }
 }
