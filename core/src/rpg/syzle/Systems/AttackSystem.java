@@ -2,12 +2,10 @@ package rpg.syzle.Systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
-import rpg.syzle.Components.AttackComponent;
-import rpg.syzle.Components.AttackPatternComponent;
-import rpg.syzle.Components.PlayerComponent;
-import rpg.syzle.Components.TransformComponent;
+import rpg.syzle.Components.*;
 import rpg.syzle.EntityCreator;
 
 import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
@@ -19,6 +17,7 @@ import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
 
 public class AttackSystem extends IteratingSystem {
 
+    private ComponentMapper<TextureComponent> textureM;
     private ComponentMapper<AttackComponent> attackM;
     private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<AttackPatternComponent> attackPatternM;
@@ -37,8 +36,7 @@ public class AttackSystem extends IteratingSystem {
         attackPatternM = ComponentMapper.getFor(AttackPatternComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
-
-
+        textureM = ComponentMapper.getFor(TextureComponent.class);
     }
 
     @Override
@@ -58,14 +56,21 @@ public class AttackSystem extends IteratingSystem {
                 attackComp.lastAttackTime = curTime;
 
             } else if (playerM.has(entity)) {
+                // These components are for the current entity, not the bullet we are creating
                 PlayerComponent playerComp = playerM.get(entity);
                 TransformComponent transformComp = transformM.get(entity);
+                TextureComponent textureComp = textureM.get(entity);
+                Vector2 direction = new Vector2(playerComp.fireCoords.x - transformComp.pos.x,
+                                playerComp.fireCoords.y - transformComp.pos.y).nor();
                 entityCreator.createBullet(
 //                        new TextureRegion(new Texture(Gdx.files.internal("bullet.png"))),
                         entity,
-                        transformComp.pos,
-                        (new Vector2(playerComp.fireCoords.x - SCREEN_WIDTH / 2,
-                                SCREEN_HEIGHT / 2 - playerComp.fireCoords.y)).nor(),
+                        transformComp.pos.cpy().add(
+                                textureComp.region.getRegionWidth() * transformComp.scale.x
+                                        * direction.x,
+                                textureComp.region.getRegionHeight() * transformComp.scale.y
+                                        * direction.y),
+                        direction,
                         150);
                 attackComp.lastAttackTime = curTime;
             }

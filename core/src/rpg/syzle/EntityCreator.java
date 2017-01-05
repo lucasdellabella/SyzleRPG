@@ -1,5 +1,6 @@
 package rpg.syzle;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -19,6 +20,7 @@ import rpg.syzle.Components.*;
 public class EntityCreator {
 
     PooledEngine engine;
+    ComponentMapper<TransformComponent> transformM;
 
     public EntityCreator(PooledEngine engine) {
         this.engine = engine;
@@ -90,14 +92,22 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
+        // TODO: We shouldn't have duplicate data, because it becomes hard to manage. Ask joe!
+
         // Set component values
-        boundsComponent.rectangle.set(startPos.x, startPos.y, 10, 36);
         bulletComponent.owner = owner;
         movementComponent.velocity.x = direction.x * speed;
         movementComponent.velocity.y = direction.y * speed;
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("bullet.png")));
         transformComponent.pos.set(startPos.x, startPos.y);
         transformComponent.scale.set(0.1f, 0.1f);
+        transformComponent.rotation = direction.angle() - 90;
+
+        // set bounds relative to transform and texture component.
+        boundsComponent.rectangle.set(startPos.x,
+                startPos.y,
+                textureComponent.region.getRegionWidth() * transformComponent.scale.x,
+                textureComponent.region.getRegionHeight() * transformComponent.scale.y);
 
         // Add components to entity
         bullet.add(boundsComponent);

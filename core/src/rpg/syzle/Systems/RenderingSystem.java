@@ -75,12 +75,11 @@ public class RenderingSystem extends IteratingSystem {
             float centerY = height * 0.5f;
 
             batch.draw(textureComponent.region,
-                    t.pos.x + centerX, t.pos.y + centerY,
+                    t.pos.x - centerX, t.pos.y - centerY,
                     centerX, centerY,
                     width, height,
-                    t.scale.x * PIXELS_TO_METERS, t.scale.y * PIXELS_TO_METERS,
-                    MathUtils.radiansToDegrees * t.rotation);
-
+                    t.scale.x, t.scale.y,
+                    t.rotation);
         }
 
         renderQueue.clear();

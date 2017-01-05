@@ -3,8 +3,10 @@ package rpg.syzle.Systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 
 import rpg.syzle.Components.AttackComponent;
@@ -28,6 +30,10 @@ public class DesktopInputProcessorSystem extends EntitySystem implements InputPr
         attackM = ComponentMapper.getFor(AttackComponent.class);
     }
 
+    private float convertToYUp(float yDown) {
+        return Gdx.graphics.getHeight() - 1 - yDown;
+    }
+
     @Override
     public boolean keyDown(int keycode) {
         return setMovement(keycode, true);
@@ -46,7 +52,7 @@ public class DesktopInputProcessorSystem extends EntitySystem implements InputPr
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         attackM.get(player).attacking = true;
-        playerM.get(player).fireCoords.set(screenX, screenY);
+        playerM.get(player).fireCoords.set(screenX, convertToYUp(screenY));
         return false;
     }
 
@@ -58,7 +64,7 @@ public class DesktopInputProcessorSystem extends EntitySystem implements InputPr
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        playerM.get(player).fireCoords.set(screenX, screenY);
+        playerM.get(player).fireCoords.set(screenX, convertToYUp(screenY));
         return true;
     }
 
