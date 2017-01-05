@@ -40,6 +40,7 @@ public class EntityCreator {
         boundsComponent.rectangle.setSize(playerComponent.WIDTH, playerComponent.HEIGHT);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
         movementComponent.moveSpeed = playerComponent.MOVE_SPEED;
+        healthComponent.hp = 5;
 
         player.add(attackComponent);
         player.add(boundsComponent);
@@ -66,6 +67,11 @@ public class EntityCreator {
         MovementPatternComponent movementPatternComponent = engine.createComponent(MovementPatternComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+
+        boundsComponent.rectangle.setSize(64, 64);
+        textureComponent.region.setRegion(new Texture(Gdx.files.internal("harambe.jpg")));
+        movementComponent.moveSpeed = 80;
+        healthComponent.hp = 10;
 
         enemy.add(attackComponent);
         enemy.add(attackPatternComponent);

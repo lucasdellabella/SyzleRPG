@@ -21,14 +21,11 @@ import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
-import rpg.syzle.Systems.AttackSystem;
-import rpg.syzle.Systems.DesktopInputProcessorSystem;
+import rpg.syzle.Systems.*;
 import rpg.syzle.Model.Bullet;
 import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
-import rpg.syzle.Systems.MovementSystem;
-import rpg.syzle.Systems.RenderingSystem;
 import rpg.syzle.SyzleRPG;
 
 /**
@@ -66,12 +63,15 @@ public class GameScreen implements Screen {
         RenderingSystem renderingSystem = new RenderingSystem(game.batch);
         MovementSystem movementSystem = new MovementSystem();
         AttackSystem attackSystem = new AttackSystem(engine);
+        CollisionSystem collisionSystem = new CollisionSystem();
         engine.addSystem(renderingSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(attackSystem);
+        engine.addSystem(collisionSystem);
 
         entityCreator = new EntityCreator(engine);
         playerEntity = entityCreator.createPlayer();
+        Entity enemyEntity = entityCreator.createEnemy();
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -79,8 +79,8 @@ public class GameScreen implements Screen {
         this.setInputProcessor();
 
         // load sound effects and start music
-        /*ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        ambientMusic.setLooping(true);*/
+        ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        ambientMusic.setLooping(true);
 
         camera = renderingSystem.getCamera();
         viewport = renderingSystem.getViewport();

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class BulletComponent implements Component, Poolable {
     public Entity owner;
-    public int damage;
+    public int damage = 1;
 
     @Override
     public void reset() {

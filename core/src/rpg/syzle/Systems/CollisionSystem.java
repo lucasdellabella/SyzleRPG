@@ -2,6 +2,7 @@ package rpg.syzle.Systems;
 
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.ashley.core.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.TransducedAccessor_field_Boolean;
 import rpg.syzle.Components.*;
 
 /**
@@ -14,6 +15,7 @@ import rpg.syzle.Components.*;
 public class CollisionSystem extends EntitySystem {
 
     private ComponentMapper<BoundsComponent> boundsM;
+    private ComponentMapper<TransformComponent> transformM;
     private ComponentMapper<MovementComponent> movementM;
     private ComponentMapper<HealthComponent> healthM;
     private ComponentMapper<BulletComponent> bulletM;
@@ -34,6 +36,9 @@ public class CollisionSystem extends EntitySystem {
     public CollisionSystem() {
         boundsM = ComponentMapper.getFor(BoundsComponent.class);
         movementM = ComponentMapper.getFor(MovementComponent.class);
+        bulletM = ComponentMapper.getFor(BulletComponent.class);
+        healthM = ComponentMapper.getFor(HealthComponent.class);
+        transformM = ComponentMapper.getFor(TransformComponent.class);
     }
 
     @Override
@@ -56,22 +61,24 @@ public class CollisionSystem extends EntitySystem {
 
         for (Entity bullet: bullets) {
 
-            BoundsComponent bulletBounds = boundsM.get(bullet);
+            BoundsComponent bulletBoundsComp = boundsM.get(bullet);
             // Whats a good name for the BulletComponent of a bullet?
-            BulletComponent bulletBullet = bulletM.get(bullet);
+            BulletComponent bulletBulletComp = bulletM.get(bullet);
+            bulletBoundsComp.rectangle.setPosition(transformM.get(bullet).pos);
 
             // Detects bullet - player collisions, and if it occurs, removes the bullet and
             // damages the player
             for (Entity player: players) {
 
-                BoundsComponent playerBounds = boundsM.get(player);
-                HealthComponent playerHp = healthM.get(player);
+                BoundsComponent playerBoundsComp = boundsM.get(player);
+                playerBoundsComp.rectangle.setPosition(transformM.get(player).pos);
+                HealthComponent playerHpComp = healthM.get(player);
 
-                if (bulletBounds.rectangle.overlaps(playerBounds.rectangle)
-                        && bulletBullet.owner != player) {
-                    playerHp.hp -= bulletBullet.damage;
+                if (bulletBoundsComp.rectangle.overlaps(playerBoundsComp.rectangle)
+                        && bulletBulletComp.owner != player) {
+                    playerHpComp.hp -= bulletBulletComp.damage;
                     engine.removeEntity(bullet);
-                    if (playerHp.hp <= 0) {
+                    if (playerHpComp.hp <= 0) {
                         engine.removeEntity(player);
                     }
 
@@ -82,14 +89,15 @@ public class CollisionSystem extends EntitySystem {
             // damages the enemy
             for (Entity enemy: enemies) {
 
-                BoundsComponent enemyBounds = boundsM.get(enemy);
-                HealthComponent enemyHp = healthM.get(enemy);
+                BoundsComponent enemyBoundsComp = boundsM.get(enemy);
+                enemyBoundsComp.rectangle.setPosition(transformM.get(enemy).pos);
+                HealthComponent enemyHpComp = healthM.get(enemy);
 
-                if (bulletBounds.rectangle.overlaps(enemyBounds.rectangle)
-                        && bulletBullet.owner != enemy) {
-                    enemyHp.hp -= bulletBullet.damage;
+                if (bulletBoundsComp.rectangle.overlaps(enemyBoundsComp.rectangle)
+                        && bulletBulletComp.owner != enemy) {
+                    enemyHpComp.hp -= bulletBulletComp.damage;
                     engine.removeEntity(bullet);
-                    if (enemyHp.hp <= 0) {
+                    if (enemyHpComp.hp <= 0) {
                         engine.removeEntity(enemy);
                     }
 
@@ -101,7 +109,7 @@ public class CollisionSystem extends EntitySystem {
 
                 BoundsComponent wallBounds = boundsM.get(wall);
 
-                if (bulletBounds.rectangle.overlaps(wallBounds.rectangle)) {
+                if (bulletBoundsComp.rectangle.overlaps(wallBounds.rectangle)) {
                     engine.removeEntity(bullet);
                 }
             }
