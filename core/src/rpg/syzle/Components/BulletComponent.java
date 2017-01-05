@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public class BulletComponent implements Component, Poolable {
     public Entity owner;
     public int damage;
-    public final int MOVE_SPEED = 225;
 
     @Override
     public void reset() {

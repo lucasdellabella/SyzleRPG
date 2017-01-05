@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+import com.badlogic.gdx.math.Vector2;
 import rpg.syzle.Components.*;
 
 /**
@@ -62,6 +63,7 @@ public class EntityCreator {
         MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
         MovementPatternComponent movementPatternComponent = engine.createComponent(MovementPatternComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
         enemy.add(attackComponent);
         enemy.add(attackPatternComponent);
@@ -70,24 +72,39 @@ public class EntityCreator {
         enemy.add(movementComponent);
         enemy.add(movementPatternComponent);
         enemy.add(textureComponent);
+        enemy.add(transformComponent);
 
         engine.addEntity(enemy);
 
         return enemy;
     }
 
-    public Entity createBullet() {
+    public Entity createBullet(Entity owner, Vector2 startPos, Vector2 direction, float speed) {
+
         Entity bullet = engine.createEntity();
 
-        MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
+        // Grab components
         BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
+        BulletComponent bulletComponent = engine.createComponent(BulletComponent.class);
+        MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        // SET STATE OF COMPONENTS
+        // Set component values
+        boundsComponent.rectangle.set(startPos.x, startPos.y, 10, 36);
+        bulletComponent.owner = owner;
+        movementComponent.velocity.x = direction.x * speed;
+        movementComponent.velocity.y = direction.y * speed;
+        textureComponent.region.setRegion(new Texture(Gdx.files.internal("bullet.png")));
+        transformComponent.pos.set(startPos.x, startPos.y);
+        transformComponent.scale.set(0.1f, 0.1f);
 
-        bullet.add(movementComponent);
+        // Add components to entity
         bullet.add(boundsComponent);
+        bullet.add(bulletComponent);
+        bullet.add(movementComponent);
         bullet.add(textureComponent);
+        bullet.add(transformComponent);
 
         engine.addEntity(bullet);
 

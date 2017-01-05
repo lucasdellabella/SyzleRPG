@@ -7,7 +7,9 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -19,6 +21,7 @@ import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
+import rpg.syzle.Systems.AttackSystem;
 import rpg.syzle.Systems.DesktopInputProcessorSystem;
 import rpg.syzle.Model.Bullet;
 import rpg.syzle.Model.Dungeon;
@@ -62,8 +65,10 @@ public class GameScreen implements Screen {
 
         RenderingSystem renderingSystem = new RenderingSystem(game.batch);
         MovementSystem movementSystem = new MovementSystem();
+        AttackSystem attackSystem = new AttackSystem(engine);
         engine.addSystem(renderingSystem);
         engine.addSystem(movementSystem);
+        engine.addSystem(attackSystem);
 
         entityCreator = new EntityCreator(engine);
         playerEntity = entityCreator.createPlayer();
@@ -118,7 +123,7 @@ public class GameScreen implements Screen {
 
         /*player.move();
         player.attack();
-        for (Bullet bullet: enemy.bullets) {
+        for (Bullet bullet: enemy.bullets)
             player.collide(bullet);
         }
         if (player.isDead()) {

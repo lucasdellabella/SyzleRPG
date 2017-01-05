@@ -81,10 +81,10 @@ public class RenderingSystem extends IteratingSystem {
                     t.scale.x * PIXELS_TO_METERS, t.scale.y * PIXELS_TO_METERS,
                     MathUtils.radiansToDegrees * t.rotation);
 
-            batch.end();
-
-            renderQueue.clear();
         }
+
+        renderQueue.clear();
+        batch.end();
     }
 
     @Override

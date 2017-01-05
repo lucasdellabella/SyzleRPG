@@ -11,11 +11,13 @@ public class AttackComponent implements Component, Poolable {
     public float attackDamage = 1.0f;
     public float attackSpeed = 1.0f;
     public boolean attacking = false;
+    public double lastAttackTime = 0;
 
     @Override
     public void reset() {
         attackDamage = 1.0f;
         attackSpeed = 1.0f;
         attacking = false;
+        lastAttackTime = 0;
     }
 }

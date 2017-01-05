@@ -7,8 +7,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
+import rpg.syzle.Components.AttackComponent;
 import rpg.syzle.Components.MovementComponent;
-import rpg.syzle.Model.Player;
+import rpg.syzle.Components.PlayerComponent;
 
 /**
  * Created by lucasdellabella on 1/1/17.
@@ -16,11 +17,15 @@ import rpg.syzle.Model.Player;
 public class DesktopInputProcessorSystem extends EntitySystem implements InputProcessor {
 
     Entity player;
-    ComponentMapper<MovementComponent> movementMapper;
+    ComponentMapper<MovementComponent> movementM;
+    ComponentMapper<PlayerComponent> playerM;
+    ComponentMapper<AttackComponent> attackM;
 
     public DesktopInputProcessorSystem(Entity player) {
         this.player = player;
-        movementMapper = ComponentMapper.getFor(MovementComponent.class);
+        movementM = ComponentMapper.getFor(MovementComponent.class);
+        playerM = ComponentMapper.getFor(PlayerComponent.class);
+        attackM = ComponentMapper.getFor(AttackComponent.class);
     }
 
     @Override
@@ -40,24 +45,21 @@ public class DesktopInputProcessorSystem extends EntitySystem implements InputPr
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//        player.startFiring();
-//        player.setFireCoords(screenX, screenY);
-//        return true;
+        attackM.get(player).attacking = true;
+        playerM.get(player).fireCoords.set(screenX, screenY);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//        player.stopFiring();
-//        return true;
-        return false;
+        attackM.get(player).attacking = false;
+        return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        //player.setFireCoords(screenX, screenY);
-        //return false;
-        return false;
+        playerM.get(player).fireCoords.set(screenX, screenY);
+        return true;
     }
 
     @Override
@@ -71,39 +73,39 @@ public class DesktopInputProcessorSystem extends EntitySystem implements InputPr
     }
 
     public Vector2 getMoveDirection() {
-        return movementMapper.get(player).velocity;
+        return movementM.get(player).velocity;
     }
 
     // TODO: A little misleading because you are expected to set with whole numbers, but then the
     // gets return floats that is just the component
     public void setMoveDirection(float x, float y) {
-        Vector2 velocity = movementMapper.get(player).velocity;
+        Vector2 velocity = movementM.get(player).velocity;
         velocity.x = x;
         velocity.y = y;
         velocity.nor();
     }
 
     public void setMoveDirectionX(int x) {
-        Vector2 velocity = movementMapper.get(player).velocity;
+        Vector2 velocity = movementM.get(player).velocity;
         velocity.x = x;
         velocity.y = Math.signum(velocity.y);
         velocity.nor();
     }
 
     public void setMoveDirectionY(int y) {
-        Vector2 velocity = movementMapper.get(player).velocity;
+        Vector2 velocity = movementM.get(player).velocity;
         velocity.x = Math.signum(velocity.x);
         velocity.y = y;
         velocity.nor();
     }
 
     public float getMoveDirectionX() {
-        Vector2 velocity = movementMapper.get(player).velocity;
+        Vector2 velocity = movementM.get(player).velocity;
         return velocity.x;
     }
 
     public float getMoveDirectionY() {
-        Vector2 velocity = movementMapper.get(player).velocity;
+        Vector2 velocity = movementM.get(player).velocity;
         return velocity.y;
     }
 
