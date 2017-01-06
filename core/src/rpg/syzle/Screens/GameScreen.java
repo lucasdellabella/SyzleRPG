@@ -95,23 +95,9 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
-
         // ecs render sprites
         // NOTE: to have ECS architecture rendered, comment out the non-esc render sprites section
         engine.update(delta);
-
-        // non-ecs render sprites
-
-        // render images
-        /*game.batch.begin();
-        dungeon.draw(game.batch);
-        player.draw(game.batch);
-        enemy.draw(game.batch);
-        game.batch.end();*/
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             dispose();
@@ -120,27 +106,6 @@ public class GameScreen implements Screen {
 
         // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
         //   and inconsistencies. Render first, update state afterwards.
-
-        /*player.move();
-        player.attack();
-        for (Bullet bullet: enemy.bullets)
-            player.collide(bullet);
-        }
-        if (player.isDead()) {
-            resetLevel();
-        }*
-
-        enemy.move();
-        enemy.attack();
-        for (Bullet bullet: player.bullets) {
-            enemy.collide(bullet);
-        }
-        if (enemy.isDead()) {
-            resetLevel();
-        }
-
-        camera.position.x = player.getX() + player.getWidth() / 2;
-        camera.position.y = player.getY() + player.getHeight() / 2;*/
     }
 
     @Override
