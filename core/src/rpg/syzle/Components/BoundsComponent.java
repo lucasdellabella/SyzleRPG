@@ -1,7 +1,7 @@
 package rpg.syzle.Components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Polygon;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
 
@@ -10,11 +10,11 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  */
 
 public class BoundsComponent implements Component, Poolable {
-    public Rectangle rectangle = new Rectangle();
+    public Polygon bounds = new Polygon();
 
     @Override
     public void reset() {
-        rectangle.setPosition(0, 0);
-        rectangle.setSize(0, 0);
+        bounds.setPosition(0, 0);
+        bounds.setVertices(new float[]{0, 0, 0, 0, 0, 0, 0, 0});
     }
 }

@@ -1,16 +1,13 @@
 package rpg.syzle;
 
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 
 import com.badlogic.gdx.math.Vector2;
+
 import rpg.syzle.Components.*;
 
 /**
@@ -37,7 +34,7 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        boundsComponent.rectangle.setSize(playerComponent.WIDTH, playerComponent.HEIGHT);
+        setBounds(boundsComponent, playerComponent.WIDTH, playerComponent.HEIGHT);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
         movementComponent.moveSpeed = playerComponent.MOVE_SPEED;
         healthComponent.hp = 5;
@@ -68,7 +65,7 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        boundsComponent.rectangle.setSize(64, 64);
+        setBounds(boundsComponent, 64, 64);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harambe.jpg")));
         movementComponent.moveSpeed = 80;
         healthComponent.hp = 10;
@@ -105,16 +102,13 @@ public class EntityCreator {
         movementComponent.velocity.x = direction.x * speed;
         movementComponent.velocity.y = direction.y * speed;
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("bullet.png")));
-        transformComponent.pos.set(startPos.x, startPos.y);
+        transformComponent.translate.set(startPos.x, startPos.y);
         transformComponent.scale.set(0.1f, 0.1f);
         transformComponent.rotation = direction.angle() - 90;
 
         // set bounds relative to transform and texture component.
-        boundsComponent.rectangle.set(startPos.x,
-                startPos.y,
-                textureComponent.region.getRegionWidth() * transformComponent.scale.x,
-                textureComponent.region.getRegionHeight() * transformComponent.scale.y);
-
+        setBounds(boundsComponent, textureComponent.region.getRegionWidth(),
+                textureComponent.region.getRegionHeight(), startPos);
         // Add components to entity
         bullet.add(boundsComponent);
         bullet.add(bulletComponent);
@@ -125,5 +119,16 @@ public class EntityCreator {
         engine.addEntity(bullet);
 
         return bullet;
+    }
+
+    private void setBounds(BoundsComponent boundsComponent, float width, float height) {
+        boundsComponent.bounds.setVertices(
+                new float[]{0, 0, 0, width, height, 0, width, height});
+    }
+
+    private void setBounds(BoundsComponent boundsComponent,
+                           float width, float height, Vector2 startPos) {
+        setBounds(boundsComponent, width, height);
+        boundsComponent.bounds.setPosition(startPos.x, startPos.y);
     }
 }

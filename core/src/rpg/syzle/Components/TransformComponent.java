@@ -13,13 +13,13 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  */
 
 public class TransformComponent implements Component, Poolable {
-    public final Vector2 pos = new Vector2(0, 0);
+    public final Vector2 translate = new Vector2(0, 0);
     public final Vector2 scale = new Vector2(1.0f, 1.0f);
     public float rotation = 0.0f;
 
     @Override
     public void reset() {
-        pos.set(0, 0);
+        translate.set(0, 0);
         scale.set(1.0f, 1.0f);
         rotation = 0.0f;
     }

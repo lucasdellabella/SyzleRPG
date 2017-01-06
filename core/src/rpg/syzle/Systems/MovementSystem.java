@@ -35,7 +35,7 @@ public class MovementSystem extends IteratingSystem {
         movementComponent.velocity.add(tmp);
 
         tmp.set(movementComponent.velocity).scl(deltaTime);
-        transformComponent.pos.add(
+        transformComponent.translate.add(
                 tmp.x * movementComponent.moveSpeed, tmp.y * movementComponent.moveSpeed);
     }
 }

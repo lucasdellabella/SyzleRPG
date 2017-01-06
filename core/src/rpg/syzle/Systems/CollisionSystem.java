@@ -2,7 +2,11 @@ package rpg.syzle.Systems;
 
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.ashley.core.*;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.TransducedAccessor_field_Boolean;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+
 import rpg.syzle.Components.*;
 
 /**
@@ -20,6 +24,9 @@ public class CollisionSystem extends EntitySystem {
     private ComponentMapper<HealthComponent> healthM;
     private ComponentMapper<BulletComponent> bulletM;
 
+    private Polygon tempBounds1;
+    private Polygon tempBounds2;
+
     public static interface CollisionListener {
         public void jump ();
         public void highJump ();
@@ -32,6 +39,7 @@ public class CollisionSystem extends EntitySystem {
     private ImmutableArray<Entity> enemies;
     private ImmutableArray<Entity> bullets;
     private ImmutableArray<Entity> walls;
+    private Intersector intersector;
 
     public CollisionSystem() {
         boundsM = ComponentMapper.getFor(BoundsComponent.class);
@@ -39,6 +47,10 @@ public class CollisionSystem extends EntitySystem {
         bulletM = ComponentMapper.getFor(BulletComponent.class);
         healthM = ComponentMapper.getFor(HealthComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
+
+        tempBounds1 = new Polygon();
+        tempBounds2 = new Polygon();
+        intersector = new Intersector();
     }
 
     @Override
@@ -64,17 +76,14 @@ public class CollisionSystem extends EntitySystem {
             BoundsComponent bulletBoundsComp = boundsM.get(bullet);
             // Whats a good name for the BulletComponent of a bullet?
             BulletComponent bulletBulletComp = bulletM.get(bullet);
-            bulletBoundsComp.rectangle.setPosition(transformM.get(bullet).pos);
 
             // Detects bullet - player collisions, and if it occurs, removes the bullet and
             // damages the player
             for (Entity player: players) {
 
-                BoundsComponent playerBoundsComp = boundsM.get(player);
-                playerBoundsComp.rectangle.setPosition(transformM.get(player).pos);
                 HealthComponent playerHpComp = healthM.get(player);
 
-                if (bulletBoundsComp.rectangle.overlaps(playerBoundsComp.rectangle)
+                if (collides(bullet, player)
                         && bulletBulletComp.owner != player) {
                     playerHpComp.hp -= bulletBulletComp.damage;
                     engine.removeEntity(bullet);
@@ -89,12 +98,9 @@ public class CollisionSystem extends EntitySystem {
             // damages the enemy
             for (Entity enemy: enemies) {
 
-                BoundsComponent enemyBoundsComp = boundsM.get(enemy);
-                enemyBoundsComp.rectangle.setPosition(transformM.get(enemy).pos);
                 HealthComponent enemyHpComp = healthM.get(enemy);
 
-                if (bulletBoundsComp.rectangle.overlaps(enemyBoundsComp.rectangle)
-                        && bulletBulletComp.owner != enemy) {
+                if (collides(bullet, enemy) && bulletBulletComp.owner != enemy) {
                     enemyHpComp.hp -= bulletBulletComp.damage;
                     engine.removeEntity(bullet);
                     if (enemyHpComp.hp <= 0) {
@@ -109,7 +115,7 @@ public class CollisionSystem extends EntitySystem {
 
                 BoundsComponent wallBounds = boundsM.get(wall);
 
-                if (bulletBoundsComp.rectangle.overlaps(wallBounds.rectangle)) {
+                if (collides(bullet, wall)) {
                     engine.removeEntity(bullet);
                 }
             }
@@ -120,6 +126,27 @@ public class CollisionSystem extends EntitySystem {
 //
 //        for (Entity enemy: enemies) {
 //        }
+    }
+
+    private boolean collides(Entity a, Entity b) {
+        if (!boundsM.has(a)) {
+           Gdx.app.debug("CollisionSystem", "Collision entity does not have bounds component.");
+        }
+        if (!transformM.has(a)) {
+            Gdx.app.debug("CollisionSystem", "Collision entity does not have transform component.");
+        }
+        BoundsComponent aBounds = boundsM.get(a);
+        BoundsComponent bBounds = boundsM.get(b);
+        TransformComponent aTransform = transformM.get(a);
+        TransformComponent bTransform = transformM.get(b);
+        tempBounds1.setVertices(aBounds.bounds.getVertices());
+        tempBounds2.setVertices(bBounds.bounds.getVertices());
+        tempBounds1.setPosition(aTransform.translate.x, aTransform.translate.y);
+        tempBounds2.setPosition(bTransform.translate.x, bTransform.translate.y);
+        tempBounds1.setScale(aTransform.scale.x, aTransform.scale.y);
+        tempBounds2.setScale(bTransform.scale.x, bTransform.scale.y);
+        // TODO: set origin, rotation might not work without it
+        return intersector.overlapConvexPolygons(tempBounds1, tempBounds2);
     }
 }
 

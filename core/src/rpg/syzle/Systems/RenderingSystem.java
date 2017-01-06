@@ -4,11 +4,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -48,7 +45,6 @@ public class RenderingSystem extends IteratingSystem {
         viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-
     }
 
     @Override
@@ -75,7 +71,7 @@ public class RenderingSystem extends IteratingSystem {
             float centerY = height * 0.5f;
 
             batch.draw(textureComponent.region,
-                    t.pos.x - centerX, t.pos.y - centerY,
+                    t.translate.x - centerX, t.translate.y - centerY,
                     centerX, centerY,
                     width, height,
                     t.scale.x, t.scale.y,
