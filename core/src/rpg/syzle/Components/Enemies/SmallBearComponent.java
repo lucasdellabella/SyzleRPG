@@ -12,8 +12,8 @@ import static rpg.syzle.Constants.MOVEMENT_PATTERN.TOWARDS_PLAYER;
  */
 
 public class SmallBearComponent implements Component, Poolable {
-    public final int WIDTH = 64;
-    public final int HEIGHT = 64;
+    public final int WIDTH = 75;
+    public final int HEIGHT = 78;
     public final int HP = 10;
     public final int MOVE_SPEED = 80;
     public final String TEXTURE_PATH = "harambe.jpg";
