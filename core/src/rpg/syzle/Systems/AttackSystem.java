@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 import rpg.syzle.Components.*;
 import rpg.syzle.EntityCreator;
 
+import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
+import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
+
 /**
  * Created by lucasdellabella on 1/4/17.
  */
@@ -56,8 +59,8 @@ public class AttackSystem extends IteratingSystem {
                 PlayerComponent playerComp = playerM.get(entity);
                 TransformComponent transformComp = transformM.get(entity);
                 TextureComponent textureComp = textureM.get(entity);
-                Vector2 direction = new Vector2(playerComp.fireCoords.x - transformComp.translate.x,
-                                playerComp.fireCoords.y - transformComp.translate.y).nor();
+                Vector2 direction = new Vector2(playerComp.fireCoords.x - SCREEN_WIDTH / 2,
+                                playerComp.fireCoords.y - SCREEN_HEIGHT / 2).nor();
                 entityCreator.createBullet(
 //                        new TextureRegion(new Texture(Gdx.files.internal("bullet.png"))),
                         entity,
