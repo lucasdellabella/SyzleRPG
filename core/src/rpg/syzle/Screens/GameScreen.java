@@ -7,23 +7,19 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
-import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
+import static rpg.syzle.DungeonConstants.MAX_ROOM_SIZE;
+import static rpg.syzle.DungeonConstants.MIN_ROOM_SIZE;
 
 import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
 import rpg.syzle.Systems.*;
-import rpg.syzle.Model.Bullet;
-import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
 import rpg.syzle.SyzleRPG;
@@ -49,11 +45,8 @@ public class GameScreen implements Screen {
     private ComponentMapper<TextureComponent> textureMapper;
     private ComponentMapper<PlayerComponent> playerMapper;
 
-    private Dungeon dungeon;
-
     public GameScreen(final SyzleRPG game) {
         this.game = game;
-        dungeon = new Dungeon(game, 8);
 
         player = new Player();
         enemy = new Enemy(player);
@@ -72,6 +65,13 @@ public class GameScreen implements Screen {
         entityCreator = new EntityCreator(engine);
         playerEntity = entityCreator.createPlayer();
         Entity enemyEntity = entityCreator.createEnemy();
+        for (int i = 0; i < 20; i++) {
+            int w = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+            int h = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+            int x = MathUtils.random(50 - w - 1);
+            int y = MathUtils.random(50 - h - 1);
+            entityCreator.createRoom(x, y, w, h);
+        }
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -108,7 +108,6 @@ public class GameScreen implements Screen {
 
         // render images
         /*game.batch.begin();
-        dungeon.draw(game.batch);
         player.draw(game.batch);
         enemy.draw(game.batch);
         game.batch.end();*/

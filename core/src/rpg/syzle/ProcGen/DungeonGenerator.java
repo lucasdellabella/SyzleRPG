@@ -1,12 +1,18 @@
 package rpg.syzle.ProcGen;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import rpg.syzle.Model.Room;
+import rpg.syzle.WallType;
 import rpg.syzle.SyzleRPG;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static rpg.syzle.DungeonConstants.*;
+import static rpg.syzle.WallType.*;
 
 /**
  * Created by lucasdellabella on 12/23/16.
@@ -15,6 +21,7 @@ public class DungeonGenerator {
 
     List<Room> rooms;
 
+    /*
     public List<Room> placeRooms(SyzleRPG game, int numRooms, int mapWidth, int mapHeight) {
         // create array for room storage for easy access
         rooms = new ArrayList<>();
@@ -40,7 +47,9 @@ public class DungeonGenerator {
 
         return rooms;
     }
+    */
 
+    /*
     private boolean overlapsNoOtherRoom(Room newRoom) {
         // finds whether our room intersects with any other room
         boolean intersection = false;
@@ -53,4 +62,5 @@ public class DungeonGenerator {
 
         return !intersection;
     }
+    */
 }
