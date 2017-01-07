@@ -4,14 +4,22 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import org.omg.CORBA.Bounds;
 import rpg.syzle.Components.*;
 import rpg.syzle.ProcGen.DungeonGenerator;
+
+import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
+import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
 
 /**
  * Created by joe on 1/2/17.
@@ -179,7 +187,37 @@ public class EntityCreator {
         room.add(transformComponent);
         room.add(roomComponent);
 
+        engine.addEntity(room);
+
         return room;
+    }
+
+    public Entity createCamera(Entity target) {
+
+        Entity camera = engine.createEntity();
+
+        CameraComponent cameraComponent = engine.createComponent(CameraComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+
+        // Set up camera state
+        OrthographicCamera cam = new OrthographicCamera();
+        cam.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        Viewport vp = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, cam);
+        vp.apply();
+        cam.position.set(cam.viewportWidth / 2, cam.viewportHeight / 2, 0);
+
+        // Set camera component values
+        cameraComponent.camera = cam;
+        cameraComponent.viewport = vp;
+        cameraComponent.target = target;
+
+        camera.add(cameraComponent);
+        camera.add(transformComponent);
+
+        engine.addEntity(camera);
+
+        return camera;
+
     }
 
     private void setBounds(BoundsComponent boundsComponent, float width, float height) {

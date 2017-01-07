@@ -15,6 +15,7 @@ import static com.badlogic.gdx.Gdx.app;
 import static rpg.syzle.DungeonConstants.MAX_ROOM_SIZE;
 import static rpg.syzle.DungeonConstants.MIN_ROOM_SIZE;
 
+import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
@@ -35,6 +36,7 @@ public class GameScreen implements Screen {
     private Music ambientMusic;
     private Player player;
     private Entity playerEntity;
+    private Entity cameraEntity;
     private Enemy enemy;
 
     private OrthographicCamera camera;
@@ -53,25 +55,30 @@ public class GameScreen implements Screen {
 
         engine = new PooledEngine();
 
-        RenderingSystem renderingSystem = new RenderingSystem(game.batch);
-        MovementSystem movementSystem = new MovementSystem();
-        AttackSystem attackSystem = new AttackSystem(engine);
-        CollisionSystem collisionSystem = new CollisionSystem();
-        engine.addSystem(renderingSystem);
-        engine.addSystem(movementSystem);
-        engine.addSystem(attackSystem);
-        engine.addSystem(collisionSystem);
-
+        // Create necessary entities
         entityCreator = new EntityCreator(engine);
         playerEntity = entityCreator.createPlayer();
+        cameraEntity = entityCreator.createCamera(playerEntity);
         Entity enemyEntity = entityCreator.createEnemy();
         for (int i = 0; i < 20; i++) {
             int w = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
             int h = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
             int x = MathUtils.random(50 - w - 1);
             int y = MathUtils.random(50 - h - 1);
-            entityCreator.createRoom(x, y, w, h);
+            entityCreator.createRoom(x * 32, y * 32, w * 32, h * 32);
         }
+
+        // Instantiate systems
+        CameraSystem cameraSystem = new CameraSystem();
+        RenderingSystem renderingSystem = new RenderingSystem(game.batch, cameraEntity);
+        MovementSystem movementSystem = new MovementSystem();
+        AttackSystem attackSystem = new AttackSystem(engine);
+        CollisionSystem collisionSystem = new CollisionSystem();
+        engine.addSystem(cameraSystem);
+        engine.addSystem(renderingSystem);
+        engine.addSystem(movementSystem);
+        engine.addSystem(attackSystem);
+        engine.addSystem(collisionSystem);
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
@@ -82,8 +89,8 @@ public class GameScreen implements Screen {
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         ambientMusic.setLooping(true);
 
-        camera = renderingSystem.getCamera();
-        viewport = renderingSystem.getViewport();
+        camera = cameraEntity.getComponent(CameraComponent.class).camera;
+        viewport = cameraEntity.getComponent(CameraComponent.class).viewport;
     }
 
     @Override
@@ -96,7 +103,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
 

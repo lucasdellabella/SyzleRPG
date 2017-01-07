@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.Components.TransformComponent;
 
@@ -30,9 +31,8 @@ public class RenderingSystem extends IteratingSystem {
     private ComponentMapper<TransformComponent> transformM;
     private Array<Entity> renderQueue;
     private OrthographicCamera camera;
-    private Viewport viewport;
 
-    public RenderingSystem(SpriteBatch batch) {
+    public RenderingSystem(SpriteBatch batch, Entity cameraEntity) {
         super(Family.all(TextureComponent.class, TransformComponent.class).get());
 
         this.batch = batch;
@@ -40,11 +40,7 @@ public class RenderingSystem extends IteratingSystem {
         transformM = ComponentMapper.getFor(TransformComponent.class);
         renderQueue = new Array<>();
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
-        viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        this.camera = cameraEntity.getComponent(CameraComponent.class).camera;
     }
 
     @Override
@@ -89,9 +85,5 @@ public class RenderingSystem extends IteratingSystem {
 
     public OrthographicCamera getCamera() {
         return camera;
-    }
-
-    public Viewport getViewport() {
-        return viewport;
     }
 }

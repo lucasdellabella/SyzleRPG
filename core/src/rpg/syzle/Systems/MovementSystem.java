@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 
+import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.MovementComponent;
 import rpg.syzle.Components.TransformComponent;
 
