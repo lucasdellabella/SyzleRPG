@@ -11,12 +11,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.DungeonConstants.MAX_ROOM_SIZE;
-import static rpg.syzle.DungeonConstants.MIN_ROOM_SIZE;
 
 import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
+import rpg.syzle.EnemyCreator;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
 import rpg.syzle.Systems.*;
@@ -65,7 +64,6 @@ public class GameScreen implements Screen {
         }
         playerEntity = entityCreator.createPlayer();
         cameraEntity = entityCreator.createCamera(playerEntity);
-        Entity enemyEntity = entityCreator.createEnemy();
 
         // Instantiate systems
         CameraSystem cameraSystem = new CameraSystem();
@@ -73,11 +71,20 @@ public class GameScreen implements Screen {
         MovementSystem movementSystem = new MovementSystem();
         AttackSystem attackSystem = new AttackSystem(engine);
         CollisionSystem collisionSystem = new CollisionSystem();
+        MovementPatternSystem movementPatternSystem = new MovementPatternSystem();
         engine.addSystem(cameraSystem);
         engine.addSystem(renderingSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(attackSystem);
         engine.addSystem(collisionSystem);
+        engine.addSystem(movementPatternSystem);
+
+        // instantiate sample enemies
+        entityCreator = new EntityCreator(engine);
+        EnemyCreator enemyCreator = new EnemyCreator(engine);
+        playerEntity = entityCreator.createPlayer();
+        Entity bearEnemy = enemyCreator.createSmallBear();
+        Entity slimeEnemy = enemyCreator.createSlimeTurret();
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);

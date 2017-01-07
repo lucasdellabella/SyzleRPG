@@ -5,5 +5,5 @@ package rpg.syzle.Constants;
  */
 
 public enum MOVEMENT_PATTERN {
-    BULLET_SPRAY_8, BULLET_SPRAY_16;
+    TOWARDS_PLAYER, AWAY_PLAYER, STAND_STILL;
 }
