@@ -17,7 +17,6 @@ import rpg.syzle.Components.*;
 public class EntityCreator {
 
     PooledEngine engine;
-    ComponentMapper<TransformComponent> transformM;
 
     public EntityCreator(PooledEngine engine) {
         this.engine = engine;
@@ -50,38 +49,6 @@ public class EntityCreator {
         engine.addEntity(player);
 
         return player;
-    }
-
-
-    public Entity createEnemy() {
-        Entity enemy = engine.createEntity();
-
-        AttackComponent attackComponent = engine.createComponent(AttackComponent.class);
-        AttackPatternComponent attackPatternComponent = engine.createComponent(AttackPatternComponent.class);
-        BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
-        HealthComponent healthComponent = engine.createComponent(HealthComponent.class);
-        MovementComponent movementComponent = engine.createComponent(MovementComponent.class);
-        MovementPatternComponent movementPatternComponent = engine.createComponent(MovementPatternComponent.class);
-        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
-        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
-
-        setBounds(boundsComponent, 64, 64);
-        textureComponent.region.setRegion(new Texture(Gdx.files.internal("harambe.jpg")));
-        movementComponent.moveSpeed = 80;
-        healthComponent.hp = 10;
-
-        enemy.add(attackComponent);
-        enemy.add(attackPatternComponent);
-        enemy.add(boundsComponent);
-        enemy.add(healthComponent);
-        enemy.add(movementComponent);
-        enemy.add(movementPatternComponent);
-        enemy.add(textureComponent);
-        enemy.add(transformComponent);
-
-        engine.addEntity(enemy);
-
-        return enemy;
     }
 
     public Entity createBullet(Entity owner, Vector2 startPos, Vector2 direction, float speed) {

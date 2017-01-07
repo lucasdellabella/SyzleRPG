@@ -7,18 +7,13 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
-import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
 
 import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
+import rpg.syzle.EnemyCreator;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
 import rpg.syzle.Systems.*;
@@ -64,14 +59,18 @@ public class GameScreen implements Screen {
         MovementSystem movementSystem = new MovementSystem();
         AttackSystem attackSystem = new AttackSystem(engine);
         CollisionSystem collisionSystem = new CollisionSystem();
+        MovementPatternSystem movementPatternSystem = new MovementPatternSystem();
         engine.addSystem(renderingSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(attackSystem);
         engine.addSystem(collisionSystem);
+        engine.addSystem(movementPatternSystem);
 
         entityCreator = new EntityCreator(engine);
+        EnemyCreator enemyCreator = new EnemyCreator(engine);
         playerEntity = entityCreator.createPlayer();
-        Entity enemyEntity = entityCreator.createEnemy();
+        Entity bearEnemy = enemyCreator.createSmallBear();
+        Entity slimeEnemy = enemyCreator.createSlimeTurret();
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);

@@ -1,7 +1,6 @@
 package rpg.syzle.Components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.utils.Pool.Poolable;
 import rpg.syzle.Constants.MOVEMENT_PATTERN;
@@ -11,10 +10,10 @@ import rpg.syzle.Constants.MOVEMENT_PATTERN;
  */
 
 public class MovementPatternComponent implements Component, Poolable {
-    public Array<MOVEMENT_PATTERN> movementPatterns = new Array<MOVEMENT_PATTERN>();
+    public MOVEMENT_PATTERN movementPattern = MOVEMENT_PATTERN.STAND_STILL;
 
     @Override
     public void reset() {
-        movementPatterns.clear();
+        movementPattern = MOVEMENT_PATTERN.STAND_STILL;
     }
 }
