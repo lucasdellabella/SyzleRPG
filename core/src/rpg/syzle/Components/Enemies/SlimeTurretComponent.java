@@ -12,8 +12,8 @@ import static rpg.syzle.Constants.MOVEMENT_PATTERN.STAND_STILL;
  */
 
 public class SlimeTurretComponent implements Component, Pool.Poolable {
-    public final int WIDTH = 64;
-    public final int HEIGHT = 64;
+    public final int WIDTH = 75;
+    public final int HEIGHT = 78;
     public final int HP = 10;
     public final int MOVE_SPEED = 80;
     public final String TEXTURE_PATH = "harambe.jpg";

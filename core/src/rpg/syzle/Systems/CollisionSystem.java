@@ -139,13 +139,23 @@ public class CollisionSystem extends EntitySystem {
         BoundsComponent bBounds = boundsM.get(b);
         TransformComponent aTransform = transformM.get(a);
         TransformComponent bTransform = transformM.get(b);
+
+        float aCenterX = aBounds.bounds.getBoundingRectangle().width * .5f;
+        float aCenterY = aBounds.bounds.getBoundingRectangle().height * .5f;
+        float bCenterX = bBounds.bounds.getBoundingRectangle().width * .5f;
+        float bCenterY = bBounds.bounds.getBoundingRectangle().height * .5f;
+
         tempBounds1.setVertices(aBounds.bounds.getVertices());
         tempBounds2.setVertices(bBounds.bounds.getVertices());
-        tempBounds1.setPosition(aTransform.translate.x, aTransform.translate.y);
-        tempBounds2.setPosition(bTransform.translate.x, bTransform.translate.y);
+        tempBounds1.setPosition(aTransform.translate.x - aCenterX, aTransform.translate.y - aCenterY);
+        tempBounds2.setPosition(bTransform.translate.x - bCenterX, bTransform.translate.y - bCenterY);
         tempBounds1.setScale(aTransform.scale.x, aTransform.scale.y);
         tempBounds2.setScale(bTransform.scale.x, bTransform.scale.y);
-        // TODO: set origin, rotation might not work without it
+        tempBounds1.setOrigin(aCenterX, aCenterY);
+        tempBounds2.setOrigin(bCenterX, bCenterY);
+        tempBounds1.setRotation(aTransform.rotation);
+        tempBounds2.setRotation(bTransform.rotation);
+
         return intersector.overlapConvexPolygons(tempBounds1, tempBounds2);
     }
 }
