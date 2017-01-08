@@ -20,6 +20,7 @@ import rpg.syzle.ProcGen.DungeonGenerator;
 
 import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
 import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
+import static rpg.syzle.WallType.*;
 
 /**
  * Created by joe on 1/2/17.
@@ -134,27 +135,51 @@ public class EntityCreator {
         return bullet;
     }
 
-    private Entity createWall(float xPos, float yPos, float length, WallType wallType) {
+    private Entity createWall(float xPos, float yPos, int length, WallType wallType) {
 
         Entity wall = engine.createEntity();
 
         // Create components
         BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
-        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
+        TileComponent tileComponent = engine.createComponent(TileComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
         WallComponent wallComponent = engine.createComponent(WallComponent.class);
 
         // Set component values
-        textureComponent.region.setRegion(textureHolder.getWall(wallType));
         transformComponent.translate.set(xPos, yPos);
-        if (wallType == WallType.EAST || wallType == WallType.WEST) {
-            setBounds(boundsComponent, 32, length * 32);
-        } else if (wallType == WallType.NORTH || wallType == WallType.SOUTH) {
-            setBounds(boundsComponent, length * 32, 32);
+        switch (wallType) {
+            case NORTH:
+                setBounds(boundsComponent, length * 32, 32);
+                tileComponent.tileMatrix[1][0] = textureHolder.getWall(NORTH_WEST);
+                tileComponent.tileMatrix[1][1] = textureHolder.getWall(NORTH);
+                tileComponent.tileMatrix[1][2] = textureHolder.getWall(NORTH_EAST);
+                tileComponent.width = length;
+                break;
+            case SOUTH:
+                setBounds(boundsComponent, length * 32, 32);
+                tileComponent.tileMatrix[1][0] = textureHolder.getWall(SOUTH_WEST);
+                tileComponent.tileMatrix[1][1] = textureHolder.getWall(SOUTH);
+                tileComponent.tileMatrix[1][2] = textureHolder.getWall(SOUTH_EAST);
+                tileComponent.width = length;
+                break;
+            case EAST:
+                setBounds(boundsComponent, 32, length * 32);
+                tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_EAST);
+                tileComponent.tileMatrix[1][1] = textureHolder.getWall(EAST);
+                tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_EAST);
+                tileComponent.height = length;
+                break;
+            case WEST:
+                setBounds(boundsComponent, 32, length * 32);
+                tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_WEST);
+                tileComponent.tileMatrix[1][1] = textureHolder.getWall(WEST);
+                tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_WEST);
+                tileComponent.height = length;
+                break;
         }
 
         wall.add(boundsComponent);
-        wall.add(textureComponent);
+        wall.add(tileComponent);
         wall.add(transformComponent);
         wall.add(wallComponent);
 
@@ -167,27 +192,32 @@ public class EntityCreator {
 
         Entity room = engine.createEntity();
 
-        // create wall entities for room
-        createWall(xPos, yPos + height - 32, width, WallType.NORTH);
-        createWall(xPos + width - 32, yPos, height, WallType.EAST);
-        createWall(xPos, yPos, width, WallType.SOUTH);
-        createWall(xPos, yPos, height, WallType.WEST);
-
         // Create Components
         BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        TileComponent tileComponent = engine.createComponent(TileComponent.class);
         RoomComponent roomComponent = engine.createComponent(RoomComponent.class);
 
         // Set component values
         transformComponent.translate.set(xPos, yPos);
         setBounds(boundsComponent, width, height);
+        tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
+        tileComponent.width = (int) boundsComponent.bounds.getBoundingRectangle().getWidth();
+        tileComponent.height = (int) boundsComponent.bounds.getBoundingRectangle().getHeight();
 
         // Add Components to entity
         room.add(boundsComponent);
         room.add(transformComponent);
         room.add(roomComponent);
+        room.add(tileComponent);
 
         engine.addEntity(room);
+
+        // create corresponding wall entities
+        createWall(xPos, yPos + (height - 1) * 32, width, NORTH);
+        createWall(xPos + (width - 1) * 32, yPos, height, EAST);
+        createWall(xPos, yPos, width, SOUTH);
+        createWall(xPos, yPos, height, WEST);
 
         return room;
     }

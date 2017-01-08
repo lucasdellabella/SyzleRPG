@@ -8,11 +8,20 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * Created by lucasdellabella on 1/7/17.
  */
 public class TileComponent implements Component, Poolable {
-    public TextureRegion tile = new TextureRegion();
+    public TextureRegion[][] tileMatrix = new TextureRegion[3][3];
+    public int width = 1;
+    public int height = 1;
 
     @Override
     public void reset() {
-        tile = new TextureRegion();
+        // Clean out tile matrix
+        for (int i = 0; i <= 2; i++) {
+            for (int j = 0; j <= 2; j++) {
+                tileMatrix[i][j] = null;
+            }
+        }
+        width = 1;
+        height = 1;
     }
 }
 

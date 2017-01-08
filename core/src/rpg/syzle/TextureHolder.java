@@ -25,8 +25,8 @@ public class TextureHolder {
         wallTextures = new HashMap<>();
         wallTextures.put(WallType.NORTH, spriteMatrixBaseAtlas[rowOffset + 1][colOffset]);
         wallTextures.put(WallType.SOUTH, spriteMatrixBaseAtlas[rowOffset - 1][colOffset]);
-        wallTextures.put(WallType.EAST, spriteMatrixBaseAtlas[rowOffset][colOffset + 1]);
-        wallTextures.put(WallType.WEST, spriteMatrixBaseAtlas[rowOffset][colOffset - 1]);
+        wallTextures.put(WallType.EAST, spriteMatrixBaseAtlas[rowOffset][colOffset - 1]);
+        wallTextures.put(WallType.WEST, spriteMatrixBaseAtlas[rowOffset][colOffset + 1]);
         wallTextures.put(WallType.NORTH_WEST, spriteMatrixBaseAtlas[8][1]);
         wallTextures.put(WallType.NORTH_EAST, spriteMatrixBaseAtlas[8][1]);
         wallTextures.put(WallType.SOUTH_WEST, spriteMatrixBaseAtlas[8][1]);
