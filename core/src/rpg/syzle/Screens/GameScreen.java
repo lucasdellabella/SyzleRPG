@@ -55,6 +55,8 @@ public class GameScreen implements Screen {
 
         // Create necessary entities
         entityCreator = new EntityCreator(engine);
+        EnemyCreator enemyCreator = new EnemyCreator(engine);
+
         for (int i = 0; i < 20; i++) {
             int w = MathUtils.random(5, 5);
             int h = MathUtils.random(5, 5);
@@ -64,6 +66,9 @@ public class GameScreen implements Screen {
         }
         playerEntity = entityCreator.createPlayer();
         cameraEntity = entityCreator.createCamera(playerEntity);
+
+        Entity bearEnemy = enemyCreator.createSmallBear();
+        Entity slimeEnemy = enemyCreator.createSlimeTurret();
 
         // Instantiate systems
         CameraSystem cameraSystem = new CameraSystem();
@@ -78,13 +83,6 @@ public class GameScreen implements Screen {
         engine.addSystem(attackSystem);
         engine.addSystem(collisionSystem);
         engine.addSystem(movementPatternSystem);
-
-        // instantiate sample enemies
-        entityCreator = new EntityCreator(engine);
-        EnemyCreator enemyCreator = new EnemyCreator(engine);
-        playerEntity = entityCreator.createPlayer();
-        Entity bearEnemy = enemyCreator.createSmallBear();
-        Entity slimeEnemy = enemyCreator.createSlimeTurret();
 
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
