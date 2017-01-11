@@ -4,19 +4,14 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController;
 import com.badlogic.gdx.math.Vector2;
 
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.omg.CORBA.Bounds;
 import rpg.syzle.Components.*;
-import rpg.syzle.ProcGen.DungeonGenerator;
 
 import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
 import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
@@ -48,7 +43,7 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        setBounds(boundsComponent, playerComponent.WIDTH, playerComponent.HEIGHT);
+        boundsComponent.addHitbox(0, 0, playerComponent.WIDTH, playerComponent.HEIGHT);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harold.jpg")));
         movementComponent.moveSpeed = playerComponent.MOVE_SPEED;
         healthComponent.hp = 5;
@@ -79,7 +74,7 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        setBounds(boundsComponent, 64, 64);
+        boundsComponent.addHitbox(0, 0, 64, 64);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harambe.jpg")));
         movementComponent.moveSpeed = 80;
         healthComponent.hp = 10;
@@ -119,9 +114,11 @@ public class EntityCreator {
         transformComponent.translate.set(startPos.x, startPos.y);
         transformComponent.scale.set(0.1f, 0.1f);
         transformComponent.rotation = direction.angle() - 90;
-        // set bounds relative to transform and texture component.
-        setBounds(boundsComponent, textureComponent.region.getRegionWidth(),
-                textureComponent.region.getRegionHeight(), startPos);
+        // set hitboxes relative to transform and texture component.
+        boundsComponent.addHitbox(0,
+                0,
+                textureComponent.region.getRegionWidth(),
+                textureComponent.region.getRegionHeight());
 
         // Add components to entity
         bullet.add(boundsComponent);
@@ -149,28 +146,28 @@ public class EntityCreator {
         transformComponent.translate.set(xPos, yPos);
         switch (wallType) {
             case NORTH:
-                setBounds(boundsComponent, length * 32, 32);
+                boundsComponent.addHitbox(0, 0, length * 32, 32);
                 tileComponent.tileMatrix[1][0] = textureHolder.getWall(NORTH_WEST);
                 tileComponent.tileMatrix[1][1] = textureHolder.getWall(NORTH);
                 tileComponent.tileMatrix[1][2] = textureHolder.getWall(NORTH_EAST);
                 tileComponent.width = length;
                 break;
             case SOUTH:
-                setBounds(boundsComponent, length * 32, 32);
+                boundsComponent.addHitbox(0, 0, length * 32, 32);
                 tileComponent.tileMatrix[1][0] = textureHolder.getWall(SOUTH_WEST);
                 tileComponent.tileMatrix[1][1] = textureHolder.getWall(SOUTH);
                 tileComponent.tileMatrix[1][2] = textureHolder.getWall(SOUTH_EAST);
                 tileComponent.width = length;
                 break;
             case EAST:
-                setBounds(boundsComponent, 32, length * 32);
+                boundsComponent.addHitbox(0, 0, 32, length * 32);
                 tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_EAST);
                 tileComponent.tileMatrix[1][1] = textureHolder.getWall(EAST);
                 tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_EAST);
                 tileComponent.height = length;
                 break;
             case WEST:
-                setBounds(boundsComponent, 32, length * 32);
+                boundsComponent.addHitbox(0, 0, 32, length * 32);
                 tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_WEST);
                 tileComponent.tileMatrix[1][1] = textureHolder.getWall(WEST);
                 tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_WEST);
@@ -187,7 +184,7 @@ public class EntityCreator {
 
         return wall;
     }
-
+/*
     public Entity createRoom(int xPos, int yPos, int width, int height) {
 
         Entity room = engine.createEntity();
@@ -202,8 +199,8 @@ public class EntityCreator {
         transformComponent.translate.set(xPos, yPos);
         setBounds(boundsComponent, width, height);
         tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
-        tileComponent.width = (int) boundsComponent.bounds.getBoundingRectangle().getWidth();
-        tileComponent.height = (int) boundsComponent.bounds.getBoundingRectangle().getHeight();
+        tileComponent.width = (int) boundsComponent.hitboxes.getBoundingRectangle().getWidth();
+        tileComponent.height = (int) boundsComponent.hitboxes.getBoundingRectangle().getHeight();
 
         // Add Components to entity
         room.add(boundsComponent);
@@ -220,7 +217,7 @@ public class EntityCreator {
         createWall(xPos, yPos, height, WEST);
 
         return room;
-    }
+    }*/
 
     public Entity createCamera(Entity target) {
 
@@ -248,16 +245,5 @@ public class EntityCreator {
 
         return camera;
 
-    }
-
-    private void setBounds(BoundsComponent boundsComponent, float width, float height) {
-        boundsComponent.bounds.setVertices(
-                new float[]{0, 0, 0, width, height, 0, width, height});
-    }
-
-    private void setBounds(BoundsComponent boundsComponent,
-                           float width, float height, Vector2 startPos) {
-        setBounds(boundsComponent, width, height);
-        boundsComponent.bounds.setPosition(startPos.x, startPos.y);
     }
 }

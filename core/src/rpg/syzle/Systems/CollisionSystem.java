@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 
 import rpg.syzle.Components.*;
 
@@ -130,23 +129,30 @@ public class CollisionSystem extends EntitySystem {
 
     private boolean collides(Entity a, Entity b) {
         if (!boundsM.has(a)) {
-           Gdx.app.debug("CollisionSystem", "Collision entity does not have bounds component.");
+           Gdx.app.debug("CollisionSystem", "Collision entity does not have hitboxes component.");
         }
         if (!transformM.has(a)) {
             Gdx.app.debug("CollisionSystem", "Collision entity does not have transform component.");
         }
-        BoundsComponent aBounds = boundsM.get(a);
-        BoundsComponent bBounds = boundsM.get(b);
+
+        BoundsComponent aBoundsComp = boundsM.get(a);
+        BoundsComponent bBoundsComp = boundsM.get(b);
         TransformComponent aTransform = transformM.get(a);
         TransformComponent bTransform = transformM.get(b);
-        tempBounds1.setVertices(aBounds.bounds.getVertices());
-        tempBounds2.setVertices(bBounds.bounds.getVertices());
         tempBounds1.setPosition(aTransform.translate.x, aTransform.translate.y);
         tempBounds2.setPosition(bTransform.translate.x, bTransform.translate.y);
         tempBounds1.setScale(aTransform.scale.x, aTransform.scale.y);
         tempBounds2.setScale(bTransform.scale.x, bTransform.scale.y);
-        // TODO: set origin, rotation might not work without it
-        return intersector.overlapConvexPolygons(tempBounds1, tempBounds2);
+
+        for (Polygon aHitbox: aBoundsComp.getHitboxes()) {
+            for (Polygon bHitbox: bBoundsComp.getHitboxes()) {
+                tempBounds1.setVertices(aHitbox.getVertices());
+                tempBounds2.setVertices(bHitbox.getVertices());
+                if (intersector.overlapConvexPolygons(tempBounds1, tempBounds2)) { return true; }
+            }
+        }
+
+        return false;
     }
 }
 

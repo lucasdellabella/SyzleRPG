@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * Created by lucasdellabella on 1/3/17.
  * --
  * Necessary for drawing things, and contains the position at which we draw something (not
- * everything in our game will need a bounds / be collidable - there will be some visual things
+ * everything in our game will need a hitboxes / be collidable - there will be some visual things
  * that want to be drawn but not take part in collisions
  */
 
