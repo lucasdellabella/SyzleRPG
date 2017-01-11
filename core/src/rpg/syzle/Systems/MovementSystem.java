@@ -27,6 +27,12 @@ public class MovementSystem extends IteratingSystem {
         movementMapper = ComponentMapper.getFor(MovementComponent.class);
     }
 
+    /**
+     * Applies the values in an entity's movement component to the entity's corresponding transform
+     * component
+     * @param entity the entity whose components will be updated
+     * @param deltaTime time since last engine.update() call in seconds
+     */
     @Override
     public void processEntity(Entity entity, float deltaTime) {
         TransformComponent transformComponent = transformMapper.get(entity);

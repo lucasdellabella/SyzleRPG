@@ -23,6 +23,11 @@ public class CameraSystem extends IteratingSystem {
         cameraM = ComponentMapper.getFor(CameraComponent.class);
     }
 
+    /**
+     * Manages the all (if there is more than one) camera entity
+     * @param entity a camera entity
+     * @param deltaTime time since last engine.update() call in seconds
+     */
     @Override
     public void processEntity(Entity entity, float deltaTime) {
         CameraComponent cameraComponent = cameraM.get(entity);

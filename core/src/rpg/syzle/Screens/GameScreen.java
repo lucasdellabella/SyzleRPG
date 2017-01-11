@@ -11,8 +11,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.DungeonConstants.MAX_ROOM_SIZE;
-import static rpg.syzle.DungeonConstants.MIN_ROOM_SIZE;
 
 import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.PlayerComponent;
@@ -104,47 +102,16 @@ public class GameScreen implements Screen {
 
         game.batch.setProjectionMatrix(camera.combined);
 
+        // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
+        //   and inconsistencies. Render first, update state afterwards.
 
         // ecs render sprites
-        // NOTE: to have ECS architecture rendered, comment out the non-esc render sprites section
         engine.update(delta);
-
-        // non-ecs render sprites
-
-        // render images
-        /*game.batch.begin();
-        player.draw(game.batch);
-        enemy.draw(game.batch);
-        game.batch.end();*/
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             dispose();
             game.setScreen(new GameScreen(game));
         }
-
-        // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
-        //   and inconsistencies. Render first, update state afterwards.
-
-        /*player.move();
-        player.attack();
-        for (Bullet bullet: enemy.bullets)
-            player.collide(bullet);
-        }
-        if (player.isDead()) {
-            resetLevel();
-        }*
-
-        enemy.move();
-        enemy.attack();
-        for (Bullet bullet: player.bullets) {
-            enemy.collide(bullet);
-        }
-        if (enemy.isDead()) {
-            resetLevel();
-        }
-
-        camera.position.x = player.getX() + player.getWidth() / 2;
-        camera.position.y = player.getY() + player.getHeight() / 2;*/
     }
 
     @Override

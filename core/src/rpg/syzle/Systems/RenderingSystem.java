@@ -44,6 +44,10 @@ public class RenderingSystem extends IteratingSystem {
         this.camera = cameraEntity.getComponent(CameraComponent.class).camera;
     }
 
+    /**
+     * Draws all entities in renderQueue, can draw textureComponent and / or tileComponent
+     * @param deltaTime time since last engine.update() call in seconds
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
@@ -68,6 +72,10 @@ public class RenderingSystem extends IteratingSystem {
         batch.end();
     }
 
+    /**
+     * Draws an entity that has a texture component
+     * @param entity the entity to be drawn
+     */
     private void drawTextureComponent(Entity entity) {
         TextureComponent textureComponent = textureM.get(entity);
 
@@ -91,6 +99,19 @@ public class RenderingSystem extends IteratingSystem {
 
     }
 
+    /**
+     * Draws an entity that has a tile component.
+     *
+     * Depending on the non-null values in the tileMatrix, just the center tile or the center tile
+     * and appropriate cornering and edging tiles will be drawn.
+     *
+     * See comments below for which tileMatrix set-up are availible.
+     * x indicates mandatory value
+     * ? indicates optional value
+     * . indicates unused value
+     *
+     * @param entity the entity to be drawn
+     */
     private void drawTileComponent(Entity entity) {
         TileComponent tileComponent = tileM.get(entity);
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
@@ -136,7 +157,7 @@ public class RenderingSystem extends IteratingSystem {
             drawEastWestEdges(entity);
         }
 
-        // only middle caes
+        // only middle case
         // . . .
         // . x .
         // . . .

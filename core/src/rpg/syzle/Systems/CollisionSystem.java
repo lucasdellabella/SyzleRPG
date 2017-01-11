@@ -26,13 +26,6 @@ public class CollisionSystem extends EntitySystem {
     private Polygon tempBounds1;
     private Polygon tempBounds2;
 
-    public static interface CollisionListener {
-        public void jump ();
-        public void highJump ();
-        public void hit ();
-        public void coin ();
-    }
-
     private Engine engine;
     private ImmutableArray<Entity> players;
     private ImmutableArray<Entity> enemies;
@@ -73,7 +66,6 @@ public class CollisionSystem extends EntitySystem {
         for (Entity bullet: bullets) {
 
             BoundsComponent bulletBoundsComp = boundsM.get(bullet);
-            // Whats a good name for the BulletComponent of a bullet?
             BulletComponent bulletBulletComp = bulletM.get(bullet);
 
             // Detects bullet - player collisions, and if it occurs, removes the bullet and
@@ -120,13 +112,14 @@ public class CollisionSystem extends EntitySystem {
             }
         }
 
-//        for (Entity player: players) {
-//        }
-//
-//        for (Entity enemy: enemies) {
-//        }
     }
 
+    /**
+     * Checks for whether two entities collide
+     * @param a Collidable entity a
+     * @param b Collidable entity b
+     * @return true if entities collide, false otherwise
+     */
     private boolean collides(Entity a, Entity b) {
         if (!boundsM.has(a)) {
            Gdx.app.debug("CollisionSystem", "Collision entity does not have hitboxes component.");
