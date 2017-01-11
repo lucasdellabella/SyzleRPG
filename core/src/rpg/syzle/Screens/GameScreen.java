@@ -109,8 +109,7 @@ public class GameScreen implements Screen {
         engine.update(delta);
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            dispose();
-            game.setScreen(new GameScreen(game));
+            resetLevel();
         }
     }
 
