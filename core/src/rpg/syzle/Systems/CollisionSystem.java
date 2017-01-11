@@ -31,7 +31,7 @@ public class CollisionSystem extends EntitySystem {
     private ImmutableArray<Entity> players;
     private ImmutableArray<Entity> enemies;
     private ImmutableArray<Entity> bullets;
-    private ImmutableArray<Entity> walls;
+    private ImmutableArray<Entity> rooms;
     private Intersector intersector;
 
     public CollisionSystem() {
@@ -57,7 +57,7 @@ public class CollisionSystem extends EntitySystem {
                 .get());
         bullets = engine.getEntitiesFor(Family.all(BulletComponent.class, BoundsComponent.class)
                 .get());
-        walls = engine.getEntitiesFor(Family.all(WallComponent.class, BoundsComponent.class)
+        rooms = engine.getEntitiesFor(Family.all(RoomComponent.class, BoundsComponent.class)
                 .get());
     }
 
@@ -86,10 +86,10 @@ public class CollisionSystem extends EntitySystem {
             }
 
             // Detects bullet - wall collisions, and if it occurs, removes the bullet
-            for (Entity wall: walls) {
-                BoundsComponent wallBounds = boundsM.get(wall);
+            for (Entity room: rooms) {
+                BoundsComponent roomBounds = boundsM.get(room);
 
-                if (collides(bullet, wall)) {
+                if (collides(bullet, room)) {
                     engine.removeEntity(bullet);
                 }
             }

@@ -30,6 +30,13 @@ public class RenderingSystem extends IteratingSystem {
     private Array<Entity> renderQueue;
     private OrthographicCamera camera;
 
+    // name values for readability
+    final int WEST = 0;
+    final int NORTH = 0;
+    final int EAST = 2;
+    final int SOUTH = 2;
+    final int NEUTRAL = 1;
+
     public RenderingSystem(SpriteBatch batch, Entity cameraEntity) {
         super(Family.all(TransformComponent.class)
                 .one(TextureComponent.class, TileComponent.class)
@@ -122,8 +129,8 @@ public class RenderingSystem extends IteratingSystem {
 
         TransformComponent t = transformM.get(entity);
 
-        float spriteWidth = tileMatrix[1][1].getRegionWidth();
-        float spriteHeight = tileMatrix[1][1].getRegionHeight();
+        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
+        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
         float centerX = spriteWidth * 0.5f;
         float centerY = spriteHeight * 0.5f;
 
@@ -131,8 +138,8 @@ public class RenderingSystem extends IteratingSystem {
         // ? x ?
         // x x x
         // ? x ?
-        if (tileMatrix[0][1] != null && tileMatrix[2][1] != null
-                && tileMatrix[1][0] != null && tileMatrix[1][2] != null) {
+        if (tileMatrix[NORTH][NEUTRAL] != null && tileMatrix[SOUTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][WEST] != null && tileMatrix[NEUTRAL][EAST] != null) {
             drawFilling(entity);
             drawNorthSouthEdges(entity);
             drawEastWestEdges(entity);
@@ -143,7 +150,7 @@ public class RenderingSystem extends IteratingSystem {
         // . x .
         // . x .
         // . x .
-        else if (tileMatrix[0][1] != null && tileMatrix[2][1] != null) {
+        else if (tileMatrix[NORTH][NEUTRAL] != null && tileMatrix[SOUTH][NEUTRAL] != null) {
             drawFilling(entity);
             drawNorthSouthEdges(entity);
         }
@@ -152,7 +159,7 @@ public class RenderingSystem extends IteratingSystem {
         // . . .
         // x x x
         // . . .
-        else if (tileMatrix[1][0] != null && tileMatrix[1][2] != null) {
+        else if (tileMatrix[NEUTRAL][WEST] != null && tileMatrix[NEUTRAL][EAST] != null) {
             drawFilling(entity);
             drawEastWestEdges(entity);
         }
@@ -172,13 +179,13 @@ public class RenderingSystem extends IteratingSystem {
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
         TransformComponent t = transformM.get(entity);
 
-        float spriteWidth = tileMatrix[1][1].getRegionWidth();
-        float spriteHeight = tileMatrix[1][1].getRegionHeight();
+        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
+        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
 
         // draw filling
         for (int i = 0; i < tileComponent.width; i++) {
             for (int j = 0; j < tileComponent.height; j++) {
-                batch.draw(tileMatrix[1][1],
+                batch.draw(tileMatrix[NEUTRAL][NEUTRAL],
                         t.translate.x + spriteWidth * i,
                         t.translate.y + spriteHeight * j,
                         spriteWidth,
@@ -193,12 +200,12 @@ public class RenderingSystem extends IteratingSystem {
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
         TransformComponent t = transformM.get(entity);
 
-        float spriteWidth = tileMatrix[1][1].getRegionWidth();
-        float spriteHeight = tileMatrix[1][1].getRegionHeight();
+        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
+        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
 
         //draw north edge
         for (int i = 0; i < tileComponent.width; i++) {
-            batch.draw(tileMatrix[0][1],
+            batch.draw(tileMatrix[NORTH][NEUTRAL],
                     t.translate.x + i * spriteWidth,
                     t.translate.y + (tileComponent.height - 1) * spriteHeight,
                     spriteWidth,
@@ -207,7 +214,7 @@ public class RenderingSystem extends IteratingSystem {
 
         // draw south edge
         for (int i = 0; i < tileComponent.width; i++) {
-            batch.draw(tileMatrix[2][1],
+            batch.draw(tileMatrix[SOUTH][NEUTRAL],
                     t.translate.x + i * spriteWidth,
                     t.translate.y,
                     spriteWidth,
@@ -220,12 +227,12 @@ public class RenderingSystem extends IteratingSystem {
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
         TransformComponent t = transformM.get(entity);
 
-        float spriteWidth = tileMatrix[1][1].getRegionWidth();
-        float spriteHeight = tileMatrix[1][1].getRegionHeight();
+        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
+        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
 
         // draw west edge
         for (int i = 0; i < tileComponent.height; i++) {
-            batch.draw(tileMatrix[1][2],
+            batch.draw(tileMatrix[NEUTRAL][WEST],
                     t.translate.x,
                     t.translate.y + i * spriteHeight,
                     spriteWidth,
@@ -234,8 +241,8 @@ public class RenderingSystem extends IteratingSystem {
 
         // draw east edge
         for (int i = 0; i < tileComponent.height; i++) {
-            batch.draw(tileMatrix[1][0],
-                    t.translate.x + (tileComponent.width - 1)* spriteWidth,
+            batch.draw(tileMatrix[NEUTRAL][EAST],
+                    t.translate.x + (tileComponent.width - 1) * spriteWidth,
                     t.translate.y + i * spriteHeight,
                     spriteWidth,
                     spriteHeight);
@@ -250,24 +257,18 @@ public class RenderingSystem extends IteratingSystem {
         float spriteWidth = tileMatrix[1][1].getRegionWidth();
         float spriteHeight = tileMatrix[1][1].getRegionHeight();
 
-        // name values for readability
-        final int WEST = 0;
-        final int NORTH = 0;
-        final int EAST = 2;
-        final int SOUTH = 2;
-
         // draw corners
         batch.draw(tileMatrix[NORTH][WEST],
                 t.translate.x,
-                t.translate.y + spriteHeight * tileComponent.height);
+                t.translate.y + spriteHeight * (tileComponent.height - 1));
         batch.draw(tileMatrix[NORTH][EAST],
-                t.translate.x + spriteWidth * tileComponent.width,
-                t.translate.y + spriteHeight * tileComponent.height);
+                t.translate.x + spriteWidth * (tileComponent.width - 1),
+                t.translate.y + spriteHeight * (tileComponent.height - 1));
         batch.draw(tileMatrix[SOUTH][WEST],
                 t.translate.x,
                 t.translate.y);
         batch.draw(tileMatrix[SOUTH][EAST],
-                t.translate.x + spriteWidth * tileComponent.width,
+                t.translate.x + spriteWidth * (tileComponent.width - 1),
                 t.translate.y);
     }
 

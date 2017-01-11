@@ -132,62 +132,21 @@ public class EntityCreator {
         return bullet;
     }
 
-    private Entity createWall(float xPos, float yPos, int length, WallType wallType) {
-
-        Entity wall = engine.createEntity();
-
-        // Create components
-        BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
-        TileComponent tileComponent = engine.createComponent(TileComponent.class);
-        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
-        WallComponent wallComponent = engine.createComponent(WallComponent.class);
-
-        // Set component values
-        transformComponent.translate.set(xPos, yPos);
-        switch (wallType) {
-            case NORTH:
-                boundsComponent.addHitbox(0, 0, length * 32, 32);
-                tileComponent.tileMatrix[1][0] = textureHolder.getWall(NORTH_WEST);
-                tileComponent.tileMatrix[1][1] = textureHolder.getWall(NORTH);
-                tileComponent.tileMatrix[1][2] = textureHolder.getWall(NORTH_EAST);
-                tileComponent.width = length;
-                break;
-            case SOUTH:
-                boundsComponent.addHitbox(0, 0, length * 32, 32);
-                tileComponent.tileMatrix[1][0] = textureHolder.getWall(SOUTH_WEST);
-                tileComponent.tileMatrix[1][1] = textureHolder.getWall(SOUTH);
-                tileComponent.tileMatrix[1][2] = textureHolder.getWall(SOUTH_EAST);
-                tileComponent.width = length;
-                break;
-            case EAST:
-                boundsComponent.addHitbox(0, 0, 32, length * 32);
-                tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_EAST);
-                tileComponent.tileMatrix[1][1] = textureHolder.getWall(EAST);
-                tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_EAST);
-                tileComponent.height = length;
-                break;
-            case WEST:
-                boundsComponent.addHitbox(0, 0, 32, length * 32);
-                tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH_WEST);
-                tileComponent.tileMatrix[1][1] = textureHolder.getWall(WEST);
-                tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH_WEST);
-                tileComponent.height = length;
-                break;
-        }
-
-        wall.add(boundsComponent);
-        wall.add(tileComponent);
-        wall.add(transformComponent);
-        wall.add(wallComponent);
-
-        engine.addEntity(wall);
-
-        return wall;
-    }
-/*
+    /**
+     * Create a room entity
+     * TODO: Make all arguments in number of tiles?
+     * @param xPos the xPos in pixels
+     * @param yPos the yPos in pixels
+     * @param width the width in number of tiles
+     * @param height the height in number of tiles
+     * @return
+     */
     public Entity createRoom(int xPos, int yPos, int width, int height) {
 
         Entity room = engine.createEntity();
+
+        final int tileWidth = 32;
+        final int tileHeight = 32;
 
         // Create Components
         BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
@@ -197,10 +156,28 @@ public class EntityCreator {
 
         // Set component values
         transformComponent.translate.set(xPos, yPos);
-        setBounds(boundsComponent, width, height);
+        tileComponent.tileMatrix[0][0] = textureHolder.getWall(NORTH_WEST);
+        tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH);
+        tileComponent.tileMatrix[0][2] = textureHolder.getWall(NORTH_EAST);
+        tileComponent.tileMatrix[1][0] = textureHolder.getWall(WEST);
         tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
-        tileComponent.width = (int) boundsComponent.hitboxes.getBoundingRectangle().getWidth();
-        tileComponent.height = (int) boundsComponent.hitboxes.getBoundingRectangle().getHeight();
+        tileComponent.tileMatrix[1][2] = textureHolder.getWall(EAST);
+        tileComponent.tileMatrix[2][0] = textureHolder.getWall(SOUTH_WEST);
+        tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH);
+        tileComponent.tileMatrix[2][2] = textureHolder.getWall(SOUTH_EAST);
+        tileComponent.width = width;
+        tileComponent.height = height;
+
+        // Set hitboxes for all walls:
+        // - 1 to set the hitboxes to the nth index represented by height or width
+        // North wall hitbox
+        boundsComponent.addHitbox(0, (height - 1) * tileHeight, width * tileWidth, 1 * tileHeight);
+        // South wall hitbox
+        boundsComponent.addHitbox(0, 0, width * tileWidth, 1 * tileHeight);
+        // East wall hitbox
+        boundsComponent.addHitbox((width - 1) * tileWidth, 0, 1 * tileWidth, height * tileHeight);
+        // West wall hitbox
+        boundsComponent.addHitbox(0, 0, 1 * tileWidth, height * tileHeight);
 
         // Add Components to entity
         room.add(boundsComponent);
@@ -210,14 +187,8 @@ public class EntityCreator {
 
         engine.addEntity(room);
 
-        // create corresponding wall entities
-        createWall(xPos, yPos + (height - 1) * 32, width, NORTH);
-        createWall(xPos + (width - 1) * 32, yPos, height, EAST);
-        createWall(xPos, yPos, width, SOUTH);
-        createWall(xPos, yPos, height, WEST);
-
         return room;
-    }*/
+    }
 
     public Entity createCamera(Entity target) {
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
@@ -54,13 +55,13 @@ public class GameScreen implements Screen {
 
         // Create necessary entities
         entityCreator = new EntityCreator(engine);
-        /*for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             int w = MathUtils.random(5, 5);
             int h = MathUtils.random(5, 5);
             int x = MathUtils.random(50 - w - 1);
             int y = MathUtils.random(50 - h - 1);
             entityCreator.createRoom(x * 32, y * 32, w, h);
-        }*/
+        }
         playerEntity = entityCreator.createPlayer();
         cameraEntity = entityCreator.createCamera(playerEntity);
         Entity enemyEntity = entityCreator.createEnemy();

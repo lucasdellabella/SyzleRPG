@@ -27,10 +27,10 @@ public class TextureHolder {
         wallTextures.put(WallType.SOUTH, spriteMatrixBaseAtlas[rowOffset - 1][colOffset]);
         wallTextures.put(WallType.EAST, spriteMatrixBaseAtlas[rowOffset][colOffset - 1]);
         wallTextures.put(WallType.WEST, spriteMatrixBaseAtlas[rowOffset][colOffset + 1]);
-        wallTextures.put(WallType.NORTH_WEST, spriteMatrixBaseAtlas[8][1]);
-        wallTextures.put(WallType.NORTH_EAST, spriteMatrixBaseAtlas[8][1]);
-        wallTextures.put(WallType.SOUTH_WEST, spriteMatrixBaseAtlas[8][1]);
-        wallTextures.put(WallType.SOUTH_EAST, spriteMatrixBaseAtlas[8][1]);
+        wallTextures.put(WallType.NORTH_WEST, spriteMatrixBaseAtlas[0][colOffset]);
+        wallTextures.put(WallType.NORTH_EAST, spriteMatrixBaseAtlas[0][colOffset + 1]);
+        wallTextures.put(WallType.SOUTH_WEST, spriteMatrixBaseAtlas[1][colOffset]);
+        wallTextures.put(WallType.SOUTH_EAST, spriteMatrixBaseAtlas[1][colOffset + 1]);
         wallTextures.put(WallType.FLOOR, spriteMatrixBaseAtlas[3][19]);
     }
 
