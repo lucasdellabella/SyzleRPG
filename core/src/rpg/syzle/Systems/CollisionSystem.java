@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 
 import rpg.syzle.Components.*;
+import rpg.syzle.Model.Bullet;
 
 /**
  * Created by lucasdellabella on 1/3/17.
@@ -71,39 +72,21 @@ public class CollisionSystem extends EntitySystem {
             // Detects bullet - player collisions, and if it occurs, removes the bullet and
             // damages the player
             for (Entity player: players) {
-
-                HealthComponent playerHpComp = healthM.get(player);
-
-                if (collides(bullet, player)
-                        && bulletBulletComp.owner != player) {
-                    playerHpComp.hp -= bulletBulletComp.damage;
-                    engine.removeEntity(bullet);
-                    if (playerHpComp.hp <= 0) {
-                        engine.removeEntity(player);
-                    }
-
+                if (collides(bullet, player) && bulletBulletComp.owner != player) {
+                    healthEntityHit(player, bullet);
                 }
             }
 
             // Detects bullet - enemy collisions, and if it occurs, removes the bullet and
             // damages the enemy
             for (Entity enemy: enemies) {
-
-                HealthComponent enemyHpComp = healthM.get(enemy);
-
                 if (collides(bullet, enemy) && bulletBulletComp.owner != enemy) {
-                    enemyHpComp.hp -= bulletBulletComp.damage;
-                    engine.removeEntity(bullet);
-                    if (enemyHpComp.hp <= 0) {
-                        engine.removeEntity(enemy);
-                    }
-
+                    healthEntityHit(enemy, bullet);
                 }
             }
 
             // Detects bullet - wall collisions, and if it occurs, removes the bullet
             for (Entity wall: walls) {
-
                 BoundsComponent wallBounds = boundsM.get(wall);
 
                 if (collides(bullet, wall)) {
@@ -146,6 +129,21 @@ public class CollisionSystem extends EntitySystem {
         }
 
         return false;
+    }
+
+    /**
+     * Does collision logic for health component
+     * @param hitEntity the entity that has been hit
+     * @param bullet the entity that has collided with hitEntity
+     */
+    private void healthEntityHit(Entity hitEntity, Entity bullet) {
+        HealthComponent hpComp = healthM.get(hitEntity);
+        BulletComponent bulletComp = bulletM.get(bullet);
+        hpComp.hp -= bulletComp.damage;
+        engine.removeEntity(bullet);
+        if (hpComp.hp <= 0) {
+            engine.removeEntity(hitEntity);
+        }
     }
 }
 

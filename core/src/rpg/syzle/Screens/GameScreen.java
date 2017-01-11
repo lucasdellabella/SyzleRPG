@@ -7,7 +7,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
@@ -17,6 +16,7 @@ import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
+import rpg.syzle.Input.DesktopInputProcessor;
 import rpg.syzle.Systems.*;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
@@ -80,7 +80,7 @@ public class GameScreen implements Screen {
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
 
-        this.setInputProcessor();
+        pickInputProcessor();
 
         // load sound effects and start music
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -146,7 +146,7 @@ public class GameScreen implements Screen {
         game.setScreen(new GameScreen(game));
     }
 
-    private void setInputProcessor() {
+    private void pickInputProcessor() {
         // Do application based setup
         Application.ApplicationType appType = app.getType();
         switch (appType) {
@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
                 Gdx.input.setInputProcessor(new AndroidGameInputProcessor(player));
                 break;
             case Desktop:
-                Gdx.input.setInputProcessor(new DesktopInputProcessorSystem(playerEntity));
+                Gdx.input.setInputProcessor(new DesktopInputProcessor(playerEntity));
                 break;
             case HeadlessDesktop:
                 Gdx.input.setInputProcessor(new InputAdapter());
