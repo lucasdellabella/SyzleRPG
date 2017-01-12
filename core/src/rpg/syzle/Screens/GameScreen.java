@@ -7,6 +7,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -69,11 +70,13 @@ public class GameScreen implements Screen {
         // Instantiate systems
         CameraSystem cameraSystem = new CameraSystem();
         RenderingSystem renderingSystem = new RenderingSystem(game.batch, cameraEntity);
+        DebugCollisionSystem debugCollisionSystem = new DebugCollisionSystem(cameraEntity);
         MovementSystem movementSystem = new MovementSystem();
         AttackSystem attackSystem = new AttackSystem(engine);
         CollisionSystem collisionSystem = new CollisionSystem();
         engine.addSystem(cameraSystem);
         engine.addSystem(renderingSystem);
+        engine.addSystem(debugCollisionSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(attackSystem);
         engine.addSystem(collisionSystem);

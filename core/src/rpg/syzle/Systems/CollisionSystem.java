@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 
+import com.badlogic.gdx.math.Rectangle;
 import rpg.syzle.Components.*;
 import rpg.syzle.Model.Bullet;
 
@@ -26,6 +27,9 @@ public class CollisionSystem extends EntitySystem {
 
     private Polygon tempBounds1;
     private Polygon tempBounds2;
+
+    private Rectangle tempBoundsRect1;
+    private Rectangle tempBoundsRect2;
 
     private Engine engine;
     private ImmutableArray<Entity> players;
@@ -115,15 +119,31 @@ public class CollisionSystem extends EntitySystem {
         BoundsComponent bBoundsComp = boundsM.get(b);
         TransformComponent aTransform = transformM.get(a);
         TransformComponent bTransform = transformM.get(b);
-        tempBounds1.setPosition(aTransform.translate.x, aTransform.translate.y);
-        tempBounds2.setPosition(bTransform.translate.x, bTransform.translate.y);
         tempBounds1.setScale(aTransform.scale.x, aTransform.scale.y);
         tempBounds2.setScale(bTransform.scale.x, bTransform.scale.y);
+        tempBounds1.setRotation(aTransform.rotation);
+        tempBounds2.setRotation(bTransform.rotation);
 
         for (Polygon aHitbox: aBoundsComp.getHitboxes()) {
             for (Polygon bHitbox: bBoundsComp.getHitboxes()) {
+                tempBoundsRect1 = aHitbox.getBoundingRectangle();
+                tempBoundsRect2 = bHitbox.getBoundingRectangle();
+
                 tempBounds1.setVertices(aHitbox.getVertices());
                 tempBounds2.setVertices(bHitbox.getVertices());
+                tempBounds1.setOrigin(tempBoundsRect1.getWidth()/2, tempBoundsRect1.getHeight()/2);
+                tempBounds2.setOrigin(tempBoundsRect2.getWidth()/2, tempBoundsRect2.getHeight()/2);
+                tempBounds1.setPosition(
+                        aTransform.translate.x - (tempBoundsRect1.getWidth()
+                                - tempBoundsRect1.getWidth() * aTransform.scale.x)/2f,
+                        aTransform.translate.y - (tempBoundsRect1.getHeight()
+                                - tempBoundsRect1.getHeight() * aTransform.scale.y)/2f);
+                tempBounds2.setPosition(
+                        bTransform.translate.x - (tempBoundsRect2.getWidth()
+                                - tempBoundsRect2.getWidth() * bTransform.scale.x)/2f,
+                        bTransform.translate.y - (tempBoundsRect2.getHeight()
+                                - tempBoundsRect2.getHeight() * bTransform.scale.y)/2f);
+
                 if (intersector.overlapConvexPolygons(tempBounds1, tempBounds2)) { return true; }
             }
         }
@@ -144,6 +164,9 @@ public class CollisionSystem extends EntitySystem {
         if (hpComp.hp <= 0) {
             engine.removeEntity(hitEntity);
         }
+    }
+
+    private void setPositionRelativeToScale(Polygon p, float x, float y) {
     }
 }
 
