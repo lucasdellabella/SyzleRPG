@@ -115,7 +115,6 @@ public class EntityCreator {
         movementComponent.velocity.y = direction.y * speed;
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("bullet.png")));
         transformComponent.translate.set(startPos.x, startPos.y);
-        transformComponent.scale.set(0.1f, 0.1f);
         transformComponent.rotation = direction.angle() - 90;
         // set hitboxes relative to transform and texture component.
         boundsComponent.addHitbox(0,

@@ -70,7 +70,7 @@ public class DebugCollisionSystem extends IteratingSystem {
                 float centerY = height * 0.5f;
 
                 tempDrawingBounds.setVertices(hitbox.getVertices());
-                tempDrawingBounds.setScale(transform.scale.x, transform.scale.y);
+                tempDrawingBounds.setOrigin(centerX, centerY);
                 tempDrawingBounds.setPosition(
                         transform.translate.x
                                 - (width - width * transform.scale.x)/2f
@@ -83,7 +83,7 @@ public class DebugCollisionSystem extends IteratingSystem {
 //                tempDrawingBounds.setPosition(transform.translate.x - width/2,
 //                        transform.translate.y - height/2);
                 tempDrawingBounds.setRotation(transform.rotation);
-                tempDrawingBounds.setOrigin(centerX, centerY);
+                tempDrawingBounds.setScale(transform.scale.x, transform.scale.y);
                 shapeRenderer.polygon(tempDrawingBounds.getTransformedVertices());
             }
 
