@@ -74,8 +74,11 @@ public class EntityCreator {
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
 
-        boundsComponent.addHitbox(0, 0, 64, 64);
         textureComponent.region.setRegion(new Texture(Gdx.files.internal("harambe.jpg")));
+        boundsComponent.addHitbox(0,
+                0,
+                textureComponent.region.getRegionWidth(),
+                textureComponent.region.getRegionHeight());
         movementComponent.moveSpeed = 80;
         healthComponent.hp = 10;
 
@@ -168,16 +171,32 @@ public class EntityCreator {
         tileComponent.width = width;
         tileComponent.height = height;
 
-        // Set hitboxes for all walls:
+        int pixelRoomWidth = width * tileWidth;
+        int pixelRoomHeight = height * tileHeight;
+
+        // TODO: write down formula for wall
+        // Set hitboxes for all walls, must shift walls forward by origin
         // - 1 to set the hitboxes to the nth index represented by height or width
         // North wall hitbox
-        boundsComponent.addHitbox(0, (height - 1) * tileHeight, width * tileWidth, 1 * tileHeight);
+        boundsComponent.addHitbox(pixelRoomWidth/4,
+                pixelRoomHeight - tileHeight - pixelRoomHeight/4 - tileHeight/2,
+                pixelRoomWidth,
+                tileHeight);
         // South wall hitbox
-        boundsComponent.addHitbox(0, 0, width * tileWidth, 1 * tileHeight);
+        boundsComponent.addHitbox(pixelRoomWidth/4,
+                tileHeight/4,
+                pixelRoomWidth,
+                tileHeight);
         // East wall hitbox
-        boundsComponent.addHitbox((width - 1) * tileWidth, 0, 1 * tileWidth, height * tileHeight);
+        boundsComponent.addHitbox(pixelRoomWidth - tileWidth - pixelRoomWidth/4 - tileWidth/2,
+                pixelRoomHeight/4,
+                tileWidth,
+                pixelRoomHeight);
         // West wall hitbox
-        boundsComponent.addHitbox(0, 0, 1 * tileWidth, height * tileHeight);
+        boundsComponent.addHitbox(tileWidth/4,
+                pixelRoomHeight/4,
+                tileWidth,
+                pixelRoomHeight);
 
         // Add Components to entity
         room.add(boundsComponent);

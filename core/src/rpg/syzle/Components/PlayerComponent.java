@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  */
 
 public class PlayerComponent implements Component, Poolable {
-    public final int WIDTH = 32;
-    public final int HEIGHT = 32;
+    public final int WIDTH = 64;
+    public final int HEIGHT = 64;
     public int MOVE_SPEED = 150;
     public Vector2 fireCoords = new Vector2();
 

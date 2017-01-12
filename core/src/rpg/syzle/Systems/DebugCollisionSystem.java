@@ -72,8 +72,14 @@ public class DebugCollisionSystem extends IteratingSystem {
                 tempDrawingBounds.setVertices(hitbox.getVertices());
                 tempDrawingBounds.setScale(transform.scale.x, transform.scale.y);
                 tempDrawingBounds.setPosition(
-                        transform.translate.x - (width - width * transform.scale.x)/2f,
-                        transform.translate.y - (height - height * transform.scale.y)/2f);
+                        transform.translate.x
+                                - (width - width * transform.scale.x)/2f
+                                - width/2
+                                + boundingRect.getX(),
+                        transform.translate.y
+                                - (height - height * transform.scale.y)/2f
+                                - height/2
+                                + boundingRect.getY());
 //                tempDrawingBounds.setPosition(transform.translate.x - width/2,
 //                        transform.translate.y - height/2);
                 tempDrawingBounds.setRotation(transform.rotation);

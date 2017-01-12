@@ -135,14 +135,22 @@ public class CollisionSystem extends EntitySystem {
                 tempBounds2.setOrigin(tempBoundsRect2.getWidth()/2, tempBoundsRect2.getHeight()/2);
                 tempBounds1.setPosition(
                         aTransform.translate.x - (tempBoundsRect1.getWidth()
-                                - tempBoundsRect1.getWidth() * aTransform.scale.x)/2f,
+                                - tempBoundsRect1.getWidth() * aTransform.scale.x)/2f
+                                - tempBoundsRect1.getWidth()/2f
+                                + tempBoundsRect1.getX(),
                         aTransform.translate.y - (tempBoundsRect1.getHeight()
-                                - tempBoundsRect1.getHeight() * aTransform.scale.y)/2f);
+                                - tempBoundsRect1.getHeight() * aTransform.scale.y)/2f
+                                - tempBoundsRect1.getHeight()/2f
+                                + tempBoundsRect1.getY());
                 tempBounds2.setPosition(
                         bTransform.translate.x - (tempBoundsRect2.getWidth()
-                                - tempBoundsRect2.getWidth() * bTransform.scale.x)/2f,
+                                - tempBoundsRect2.getWidth() * bTransform.scale.x)/2f
+                                - tempBoundsRect2.getWidth()/2f
+                                + tempBoundsRect2.getX(),
                         bTransform.translate.y - (tempBoundsRect2.getHeight()
-                                - tempBoundsRect2.getHeight() * bTransform.scale.y)/2f);
+                                - tempBoundsRect2.getHeight() * bTransform.scale.y)/2f
+                                - tempBoundsRect2.getHeight()/2f
+                                + tempBoundsRect2.getY());
 
                 if (intersector.overlapConvexPolygons(tempBounds1, tempBounds2)) { return true; }
             }
