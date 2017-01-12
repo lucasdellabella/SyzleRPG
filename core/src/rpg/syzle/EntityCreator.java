@@ -7,14 +7,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import org.omg.CORBA.Bounds;
 import rpg.syzle.Components.*;
+import rpg.syzle.Model.Room;
 
-import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
-import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
+import static rpg.syzle.DungeonConstants.*;
 import static rpg.syzle.WallType.*;
 
 /**
@@ -23,13 +27,18 @@ import static rpg.syzle.WallType.*;
 
 public class EntityCreator {
 
-    PooledEngine engine;
-    TextureHolder textureHolder;
-    ComponentMapper<TransformComponent> transformM;
+    private PooledEngine engine;
+    private TextureHolder textureHolder;
+    private ComponentMapper<BoundsComponent> boundsM;
+    private ComponentMapper<TransformComponent> transformM;
+    private Array<Entity> rooms;
 
     public EntityCreator(PooledEngine engine) {
         this.engine = engine;
         this.textureHolder = new TextureHolder();
+        this.boundsM = ComponentMapper.getFor(BoundsComponent.class);
+        this.transformM = ComponentMapper.getFor(TransformComponent.class);
+        this.rooms = new Array<>();
     }
 
     public Entity createPlayer() {
@@ -135,6 +144,54 @@ public class EntityCreator {
     }
 
     /**
+     * Attempts to create a room within the given map
+     * @param mapWidth the coordinate width in which the room can be generated
+     * @param mapHeight the coordinate height in which the room can be generated
+     * @return the created room entity. NULL if all retryAttempts failed.
+     */
+    public Entity createRoom(int mapWidth, int mapHeight) {
+        int retryAttempts = 10;
+        Entity room = null;
+        for (int i = 0; room == null && i < retryAttempts; i++) {
+            int w = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+            int h = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+            int x = MathUtils.random(mapWidth - w - 1) * 32;
+            int y = MathUtils.random(mapHeight - h - 1) * 32;
+
+            if (overlapsNoOtherRoom(x, y, w, h)) {
+                room = createRoom(x, y, w, h);
+                rooms.add(room);
+            }
+        }
+        return room;
+    }
+
+    /**
+     * Checks whether the given coordinates for a room will not overlap any other room
+     * @param x the x coordinate of the room
+     * @param y the y coordinate of the room
+     * @param width the width of the room
+     * @param height the height of the room
+     * @return true if the coordinates overlap no other room, false otherwise
+     */
+    private boolean overlapsNoOtherRoom(int x, int y, int width, int height) {
+        // finds whether our room intersects with any other room
+        boolean intersection = false;
+        Rectangle roomBounds = new Rectangle(x, y, width * 32, height * 32);
+        Rectangle otherBounds;
+        for (Entity otherRoom: rooms) {
+            otherBounds = boundsM.get(otherRoom).getBoundingRectangle();
+            otherBounds.setPosition(transformM.get(otherRoom).translate);
+            if (roomBounds.overlaps(otherBounds)) {
+                intersection = true;
+                break;
+            }
+        }
+
+        return !intersection;
+    }
+
+    /**
      * Create a room entity
      * TODO: Make all arguments in number of tiles?
      * @param xPos the xPos in pixels
@@ -178,7 +235,7 @@ public class EntityCreator {
         // - 1 to set the hitboxes to the nth index represented by height or width
         // North wall hitbox
         boundsComponent.addHitbox(pixelRoomWidth/4,
-                pixelRoomHeight - tileHeight - pixelRoomHeight/4 - tileHeight/2,
+                pixelRoomHeight/2 - tileHeight/4,
                 pixelRoomWidth,
                 tileHeight);
         // South wall hitbox
@@ -187,7 +244,7 @@ public class EntityCreator {
                 pixelRoomWidth,
                 tileHeight);
         // East wall hitbox
-        boundsComponent.addHitbox(pixelRoomWidth - tileWidth - pixelRoomWidth/4 - tileWidth/2,
+        boundsComponent.addHitbox(pixelRoomWidth/2 - tileWidth/4,
                 pixelRoomHeight/4,
                 tileWidth,
                 pixelRoomHeight);

@@ -57,11 +57,7 @@ public class GameScreen implements Screen {
         // Create necessary entities
         entityCreator = new EntityCreator(engine);
         for (int i = 0; i < 20; i++) {
-            int w = MathUtils.random(5, 5);
-            int h = MathUtils.random(5, 5);
-            int x = MathUtils.random(50 - w - 1);
-            int y = MathUtils.random(50 - h - 1);
-            entityCreator.createRoom(x * 32, y * 32, w, h);
+            entityCreator.createRoom(50, 50);
         }
         playerEntity = entityCreator.createPlayer();
         cameraEntity = entityCreator.createCamera(playerEntity);

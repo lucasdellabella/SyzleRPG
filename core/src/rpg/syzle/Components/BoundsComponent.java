@@ -3,6 +3,7 @@ package rpg.syzle.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Polygon;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
@@ -29,6 +30,30 @@ public class BoundsComponent implements Component, Poolable {
                         x + width, y + height,
                         x, y + height});
         hitboxes.add(newHitbox);
+    }
+
+    /**
+     * Gets the rectangle that bounds all bounds
+     * @return the bounding rectangle for the entity
+     */
+    public Rectangle getBoundingRectangle() {
+        if (hitboxes.size == 1) {
+            return hitboxes.get(0).getBoundingRectangle();
+        }
+
+        float xMin = Integer.MAX_VALUE;
+        float yMin = Integer.MAX_VALUE;
+        float xMax = Integer.MIN_VALUE;
+        float yMax = Integer.MIN_VALUE;
+
+        for (Polygon hitbox: hitboxes) {
+            xMin = Math.min(xMin, hitbox.getX());
+            yMin = Math.min(yMin, hitbox.getY());
+            xMax = Math.max(xMax, hitbox.getX() + hitbox.getBoundingRectangle().getWidth());
+            yMax = Math.max(yMax, hitbox.getY() + hitbox.getBoundingRectangle().getHeight());
+        }
+
+        return new Rectangle(xMin, yMin, xMax - xMin, yMax - yMin);
     }
 
     public Array<Polygon> getHitboxes() {

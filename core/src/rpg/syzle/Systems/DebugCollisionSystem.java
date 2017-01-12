@@ -72,9 +72,13 @@ public class DebugCollisionSystem extends IteratingSystem {
                 tempDrawingBounds.setVertices(hitbox.getVertices());
                 tempDrawingBounds.setOrigin(centerX, centerY);
                 tempDrawingBounds.setPosition(
+                        // core translate portion of the position
                         transform.translate.x
+                                // offset due to scaling
                                 - (width - width * transform.scale.x)/2f
+                                // offset due to origin
                                 - width/2
+                                // offset due to hitbox not at origin of parent entity
                                 + boundingRect.getX(),
                         transform.translate.y
                                 - (height - height * transform.scale.y)/2f
