@@ -14,9 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.omg.CORBA.Bounds;
 import rpg.syzle.Components.*;
-import rpg.syzle.Model.Room;
 
 import static rpg.syzle.DungeonConstants.*;
 import static rpg.syzle.WallType.*;
@@ -215,15 +213,15 @@ public class EntityCreator {
 
         // Set component values
         transformComponent.translate.set(xPos, yPos);
-        tileComponent.tileMatrix[0][0] = textureHolder.getWall(NORTH_WEST);
         tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH);
-        tileComponent.tileMatrix[0][2] = textureHolder.getWall(NORTH_EAST);
-        tileComponent.tileMatrix[1][0] = textureHolder.getWall(WEST);
-        tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
-        tileComponent.tileMatrix[1][2] = textureHolder.getWall(EAST);
-        tileComponent.tileMatrix[2][0] = textureHolder.getWall(SOUTH_WEST);
         tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH);
+        tileComponent.tileMatrix[1][2] = textureHolder.getWall(EAST);
+        tileComponent.tileMatrix[1][0] = textureHolder.getWall(WEST);
+        tileComponent.tileMatrix[0][0] = textureHolder.getWall(NORTH_WEST);
+        tileComponent.tileMatrix[0][2] = textureHolder.getWall(NORTH_EAST);
+        tileComponent.tileMatrix[2][0] = textureHolder.getWall(SOUTH_WEST);
         tileComponent.tileMatrix[2][2] = textureHolder.getWall(SOUTH_EAST);
+        tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
         tileComponent.width = width;
         tileComponent.height = height;
 
@@ -263,6 +261,118 @@ public class EntityCreator {
         engine.addEntity(room);
 
         return room;
+    }
+
+    /**
+     * Create a room entity
+     * @param xPos the xPos in pixels
+     * @param yPos the yPos in pixels
+     * @param width the width in number of tiles
+     * @param height the height in number of tiles
+     * @return
+     */
+    public Entity createHallway(int xPos, int yPos, int width, int height, WallType opening) {
+
+        Entity room = engine.createEntity();
+
+        // Create Components
+        BoundsComponent boundsComponent = engine.createComponent(BoundsComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        TileComponent tileComponent = engine.createComponent(TileComponent.class);
+        RoomComponent roomComponent = engine.createComponent(RoomComponent.class);
+
+        transformComponent.translate.set(xPos, yPos);
+        tileComponent.width = width;
+        tileComponent.height = height;
+        tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
+
+        addEdgeTileAndHitboxForHallway(width, height, tileComponent, boundsComponent, opening);
+        addCornersForHallway(tileComponent, opening);
+
+        // Add Components to entity
+        room.add(boundsComponent);
+        room.add(transformComponent);
+        room.add(roomComponent);
+        room.add(tileComponent);
+
+        engine.addEntity(room);
+
+        return room;
+    }
+
+    private void addEdgeTileAndHitboxForHallway(int width,
+                                                int height,
+                                                TileComponent tileComponent,
+                                                BoundsComponent boundsComponent,
+                                                WallType opening) {
+        final int tileWidth = 32;
+        final int tileHeight = 32;
+
+        // Set component values
+        int pixelRoomWidth = width * tileWidth;
+        int pixelRoomHeight = height * tileHeight;
+
+        if (opening != NORTH) {
+            tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH);
+
+            // North wall hitbox
+            boundsComponent.addHitbox(pixelRoomWidth/4,
+                    pixelRoomHeight/2 - tileHeight/4,
+                    pixelRoomWidth,
+                    tileHeight);
+        }
+
+        if (opening != SOUTH) {
+            tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH);
+
+            // South wall hitbox
+            boundsComponent.addHitbox(pixelRoomWidth/4,
+                    tileHeight/4,
+                    pixelRoomWidth,
+                    tileHeight);
+        }
+
+        if (opening != WEST) {
+            tileComponent.tileMatrix[1][0] = textureHolder.getWall(WEST);
+
+            // West wall hitbox
+            boundsComponent.addHitbox(tileWidth / 4,
+                    pixelRoomHeight / 4,
+                    tileWidth,
+                    pixelRoomHeight);
+        }
+
+        if (opening != EAST) {
+            tileComponent.tileMatrix[1][2] = textureHolder.getWall(EAST);
+
+            // East wall hitbox
+            boundsComponent.addHitbox(pixelRoomWidth / 2 - tileWidth / 4,
+                    pixelRoomHeight / 4,
+                    tileWidth,
+                    pixelRoomHeight);
+        }
+
+    }
+
+    /**
+     * Based on the type of opening, inserts different corner tiles into the tileMatrix
+     * @param tileComponent
+     * @param opening
+     */
+    private void addCornersForHallway(TileComponent tileComponent, WallType opening) {
+        if (opening == NORTH) {
+            tileComponent.tileMatrix[2][0] = textureHolder.getWall(SOUTH_WEST);
+            tileComponent.tileMatrix[2][2] = textureHolder.getWall(SOUTH_EAST);
+        } else if (opening == SOUTH) {
+            tileComponent.tileMatrix[0][0] = textureHolder.getWall(NORTH_WEST);
+            tileComponent.tileMatrix[0][2] = textureHolder.getWall(NORTH_EAST);
+        } else if (opening == EAST) {
+            tileComponent.tileMatrix[0][0] = textureHolder.getWall(NORTH_WEST);
+            tileComponent.tileMatrix[2][0] = textureHolder.getWall(SOUTH_WEST);
+        } else if (opening == WEST) {
+            tileComponent.tileMatrix[0][2] = textureHolder.getWall(NORTH_EAST);
+            tileComponent.tileMatrix[2][2] = textureHolder.getWall(SOUTH_EAST);
+        }
     }
 
     public Entity createCamera(Entity target) {

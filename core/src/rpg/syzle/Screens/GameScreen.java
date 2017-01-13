@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
+import static rpg.syzle.WallType.*;
 
 import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.PlayerComponent;
@@ -23,6 +24,7 @@ import rpg.syzle.Systems.*;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
 import rpg.syzle.SyzleRPG;
+import rpg.syzle.WallType;
 
 /**
  * Created by lucasdellabella on 12/20/16.
@@ -59,6 +61,10 @@ public class GameScreen implements Screen {
         for (int i = 0; i < 20; i++) {
             entityCreator.createRoom(50, 50);
         }
+        // Sample hallway code
+//        entityCreator.createHallway(0 * 32, 0 * 32, 5, 10, SOUTH);
+//        entityCreator.createHallway((5 - 1) * 32, 10 * 32 - 5 * 32, 10, 5, WEST);
+//        entityCreator.createHallway((5 - 1) * 32 + 5 * 32, 10 * 32 - (5 - 1) * 32 - 10 * 32, 5, 10,NORTH);
         playerEntity = entityCreator.createPlayer();
         cameraEntity = entityCreator.createCamera(playerEntity);
         Entity enemyEntity = entityCreator.createEnemy();

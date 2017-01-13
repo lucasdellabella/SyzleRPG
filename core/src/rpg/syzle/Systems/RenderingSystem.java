@@ -22,6 +22,8 @@ import rpg.syzle.Components.TransformComponent;
 public class RenderingSystem extends IteratingSystem {
 
     private final int PIXELS_TO_METERS = 1;
+    private final int spriteWidth = 32;
+    private final int spriteHeight = 32;
 
     private SpriteBatch batch;
     private ComponentMapper<TextureComponent> textureM;
@@ -129,20 +131,75 @@ public class RenderingSystem extends IteratingSystem {
 
         TransformComponent t = transformM.get(entity);
 
-        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
-        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
-        float centerX = spriteWidth * 0.5f;
-        float centerY = spriteHeight * 0.5f;
-
         // full-ish matrix case
         // ? x ?
         // x x x
         // ? x ?
-        if (tileMatrix[NORTH][NEUTRAL] != null && tileMatrix[SOUTH][NEUTRAL] != null
-                && tileMatrix[NEUTRAL][WEST] != null && tileMatrix[NEUTRAL][EAST] != null) {
+        if (tileMatrix[NORTH][NEUTRAL] != null
+                && tileMatrix[SOUTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][WEST] != null
+                && tileMatrix[NEUTRAL][EAST] != null) {
             drawFilling(entity);
-            drawNorthSouthEdges(entity);
-            drawEastWestEdges(entity);
+            drawNorthEdge(entity);
+            drawSouthEdge(entity);
+            drawEastEdge(entity);
+            drawWestEdge(entity);
+            drawCorners(entity);
+        }
+
+        // north no-wall case
+        // . . .
+        // x x x
+        // ? x ?
+        else if (tileMatrix[SOUTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][WEST] != null
+                && tileMatrix[NEUTRAL][EAST] != null) {
+            drawFilling(entity);
+            drawSouthEdge(entity);
+            drawEastEdge(entity);
+            drawWestEdge(entity);
+            drawCorners(entity);
+        }
+
+        // south no-wall case
+        // ? x ?
+        // x x x
+        // . . .
+        else if (tileMatrix[NORTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][WEST] != null
+                && tileMatrix[NEUTRAL][EAST] != null) {
+            drawFilling(entity);
+            drawNorthEdge(entity);
+            drawEastEdge(entity);
+            drawWestEdge(entity);
+            drawCorners(entity);
+        }
+
+        // east no-wall case
+        // ? x .
+        // x x .
+        // ? x .
+        else if (tileMatrix[NORTH][NEUTRAL] != null
+                && tileMatrix[SOUTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][WEST] != null) {
+            drawFilling(entity);
+            drawNorthEdge(entity);
+            drawSouthEdge(entity);
+            drawWestEdge(entity);
+            drawCorners(entity);
+        }
+
+        // west no-wall case
+        // . x ?
+        // . x x
+        // . x ?
+        else if (tileMatrix[NORTH][NEUTRAL] != null
+                && tileMatrix[SOUTH][NEUTRAL] != null
+                && tileMatrix[NEUTRAL][EAST] != null) {
+            drawFilling(entity);
+            drawNorthEdge(entity);
+            drawSouthEdge(entity);
+            drawEastEdge(entity);
             drawCorners(entity);
         }
 
@@ -152,7 +209,8 @@ public class RenderingSystem extends IteratingSystem {
         // . x .
         else if (tileMatrix[NORTH][NEUTRAL] != null && tileMatrix[SOUTH][NEUTRAL] != null) {
             drawFilling(entity);
-            drawNorthSouthEdges(entity);
+            drawNorthEdge(entity);
+            drawSouthEdge(entity);
         }
 
         // horizontal line case
@@ -161,7 +219,8 @@ public class RenderingSystem extends IteratingSystem {
         // . . .
         else if (tileMatrix[NEUTRAL][WEST] != null && tileMatrix[NEUTRAL][EAST] != null) {
             drawFilling(entity);
-            drawEastWestEdges(entity);
+            drawEastEdge(entity);
+            drawWestEdge(entity);
         }
 
         // only middle case
@@ -194,14 +253,10 @@ public class RenderingSystem extends IteratingSystem {
         }
 
     }
-
-    private void drawNorthSouthEdges(Entity entity) {
+    private void drawNorthEdge(Entity entity) {
         TileComponent tileComponent = tileM.get(entity);
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
         TransformComponent t = transformM.get(entity);
-
-        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
-        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
 
         //draw north edge
         for (int i = 0; i < tileComponent.width; i++) {
@@ -211,6 +266,13 @@ public class RenderingSystem extends IteratingSystem {
                     spriteWidth,
                     spriteHeight);
         }
+
+    }
+
+    private void drawSouthEdge(Entity entity) {
+        TileComponent tileComponent = tileM.get(entity);
+        TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
+        TransformComponent t = transformM.get(entity);
 
         // draw south edge
         for (int i = 0; i < tileComponent.width; i++) {
@@ -222,27 +284,31 @@ public class RenderingSystem extends IteratingSystem {
         }
     }
 
-    private void drawEastWestEdges(Entity entity) {
+    private void drawEastEdge(Entity entity) {
         TileComponent tileComponent = tileM.get(entity);
         TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
         TransformComponent t = transformM.get(entity);
-
-        float spriteWidth = tileMatrix[NEUTRAL][NEUTRAL].getRegionWidth();
-        float spriteHeight = tileMatrix[NEUTRAL][NEUTRAL].getRegionHeight();
-
-        // draw west edge
-        for (int i = 0; i < tileComponent.height; i++) {
-            batch.draw(tileMatrix[NEUTRAL][WEST],
-                    t.translate.x,
-                    t.translate.y + i * spriteHeight,
-                    spriteWidth,
-                    spriteHeight);
-        }
 
         // draw east edge
         for (int i = 0; i < tileComponent.height; i++) {
             batch.draw(tileMatrix[NEUTRAL][EAST],
                     t.translate.x + (tileComponent.width - 1) * spriteWidth,
+                    t.translate.y + i * spriteHeight,
+                    spriteWidth,
+                    spriteHeight);
+        }
+
+    }
+
+    private void drawWestEdge(Entity entity) {
+        TileComponent tileComponent = tileM.get(entity);
+        TextureRegion[][] tileMatrix = tileComponent.tileMatrix;
+        TransformComponent t = transformM.get(entity);
+
+        // draw west edge
+        for (int i = 0; i < tileComponent.height; i++) {
+            batch.draw(tileMatrix[NEUTRAL][WEST],
+                    t.translate.x,
                     t.translate.y + i * spriteHeight,
                     spriteWidth,
                     spriteHeight);
@@ -258,18 +324,29 @@ public class RenderingSystem extends IteratingSystem {
         float spriteHeight = tileMatrix[1][1].getRegionHeight();
 
         // draw corners
-        batch.draw(tileMatrix[NORTH][WEST],
-                t.translate.x,
-                t.translate.y + spriteHeight * (tileComponent.height - 1));
-        batch.draw(tileMatrix[NORTH][EAST],
-                t.translate.x + spriteWidth * (tileComponent.width - 1),
-                t.translate.y + spriteHeight * (tileComponent.height - 1));
-        batch.draw(tileMatrix[SOUTH][WEST],
-                t.translate.x,
-                t.translate.y);
-        batch.draw(tileMatrix[SOUTH][EAST],
-                t.translate.x + spriteWidth * (tileComponent.width - 1),
-                t.translate.y);
+        if (tileMatrix[NORTH][WEST] != null) {
+            batch.draw(tileMatrix[NORTH][WEST],
+                    t.translate.x,
+                    t.translate.y + spriteHeight * (tileComponent.height - 1));
+        }
+
+        if (tileMatrix[NORTH][EAST] != null) {
+            batch.draw(tileMatrix[NORTH][EAST],
+                    t.translate.x + spriteWidth * (tileComponent.width - 1),
+                    t.translate.y + spriteHeight * (tileComponent.height - 1));
+        }
+
+        if (tileMatrix[SOUTH][WEST] != null) {
+            batch.draw(tileMatrix[SOUTH][WEST],
+                    t.translate.x,
+                    t.translate.y);
+        }
+
+        if (tileMatrix[SOUTH][EAST] != null) {
+            batch.draw(tileMatrix[SOUTH][EAST],
+                    t.translate.x + spriteWidth * (tileComponent.width - 1),
+                    t.translate.y);
+        }
     }
 
     @Override
