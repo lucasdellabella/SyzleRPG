@@ -8,7 +8,7 @@ import static rpg.syzle.DungeonConstants.*;
 /**
  * Created by lucasdellabella on 12/23/16.
  */
-public class Room extends Walkable implements MyDrawable {
+public class Room {
 
     public int x1;
     public int y1;
@@ -21,7 +21,6 @@ public class Room extends Walkable implements MyDrawable {
     public Vector2 center;
 
     public Room(SyzleRPG game, int x, int y, int width, int height) {
-        super(game);
         x1 = x;
         y1 = y;
         x2 = x + width;
@@ -31,7 +30,7 @@ public class Room extends Walkable implements MyDrawable {
 
         center = new Vector2((float) Math.floor((x1 + x2)/2.0), (float) Math.floor((y1 + y2)/2.0));
     }
-
+/*
     public boolean intersects(Room room) {
         return (x1 <= room.x2 && x2 >= room.x1 &&
                 y1 <= room.y2 && room.y2 >= room.y1);
@@ -82,4 +81,5 @@ public class Room extends Walkable implements MyDrawable {
             }
         }
     }
+    */
 }

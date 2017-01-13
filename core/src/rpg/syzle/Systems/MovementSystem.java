@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 
+import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.MovementComponent;
 import rpg.syzle.Components.TransformComponent;
 
@@ -26,6 +27,12 @@ public class MovementSystem extends IteratingSystem {
         movementMapper = ComponentMapper.getFor(MovementComponent.class);
     }
 
+    /**
+     * Applies the values in an entity's movement component to the entity's corresponding transform
+     * component
+     * @param entity the entity whose components will be updated
+     * @param deltaTime time since last engine.update() call in seconds
+     */
     @Override
     public void processEntity(Entity entity, float deltaTime) {
         TransformComponent transformComponent = transformMapper.get(entity);
@@ -35,7 +42,7 @@ public class MovementSystem extends IteratingSystem {
         movementComponent.velocity.add(tmp);
 
         tmp.set(movementComponent.velocity).scl(deltaTime);
-        transformComponent.pos.add(
+        transformComponent.translate.add(
                 tmp.x * movementComponent.moveSpeed, tmp.y * movementComponent.moveSpeed);
     }
 }

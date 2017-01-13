@@ -1,4 +1,4 @@
-package rpg.syzle.Systems;
+package rpg.syzle.Input;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -16,14 +16,14 @@ import rpg.syzle.Components.PlayerComponent;
 /**
  * Created by lucasdellabella on 1/1/17.
  */
-public class DesktopInputProcessorSystem extends EntitySystem implements InputProcessor {
+public class DesktopInputProcessor implements InputProcessor {
 
     Entity player;
     ComponentMapper<MovementComponent> movementM;
     ComponentMapper<PlayerComponent> playerM;
     ComponentMapper<AttackComponent> attackM;
 
-    public DesktopInputProcessorSystem(Entity player) {
+    public DesktopInputProcessor(Entity player) {
         this.player = player;
         movementM = ComponentMapper.getFor(MovementComponent.class);
         playerM = ComponentMapper.getFor(PlayerComponent.class);

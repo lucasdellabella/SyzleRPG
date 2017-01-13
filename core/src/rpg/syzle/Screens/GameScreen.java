@@ -7,26 +7,24 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import static com.badlogic.gdx.Gdx.app;
-import static rpg.syzle.DungeonConstants.SCREEN_WIDTH;
-import static rpg.syzle.DungeonConstants.SCREEN_HEIGHT;
+import static rpg.syzle.WallType.*;
 
+import rpg.syzle.Components.CameraComponent;
 import rpg.syzle.Components.PlayerComponent;
 import rpg.syzle.Components.TextureComponent;
 import rpg.syzle.EntityCreator;
 import rpg.syzle.Input.AndroidGameInputProcessor;
+import rpg.syzle.Input.DesktopInputProcessor;
 import rpg.syzle.Systems.*;
-import rpg.syzle.Model.Bullet;
-import rpg.syzle.Model.Dungeon;
 import rpg.syzle.Model.Enemy;
 import rpg.syzle.Model.Player;
 import rpg.syzle.SyzleRPG;
+import rpg.syzle.WallType;
 
 /**
  * Created by lucasdellabella on 12/20/16.
@@ -39,6 +37,7 @@ public class GameScreen implements Screen {
     private Music ambientMusic;
     private Player player;
     private Entity playerEntity;
+    private Entity cameraEntity;
     private Enemy enemy;
 
     private OrthographicCamera camera;
@@ -49,41 +48,52 @@ public class GameScreen implements Screen {
     private ComponentMapper<TextureComponent> textureMapper;
     private ComponentMapper<PlayerComponent> playerMapper;
 
-    private Dungeon dungeon;
-
     public GameScreen(final SyzleRPG game) {
         this.game = game;
-        dungeon = new Dungeon(game, 8);
 
         player = new Player();
         enemy = new Enemy(player);
 
         engine = new PooledEngine();
 
-        RenderingSystem renderingSystem = new RenderingSystem(game.batch);
+        // Create necessary entities
+        entityCreator = new EntityCreator(engine);
+        for (int i = 0; i < 20; i++) {
+            entityCreator.createRoom(50, 50);
+        }
+        // Sample hallway code
+//        entityCreator.createHallway(0 * 32, 0 * 32, 5, 10, SOUTH);
+//        entityCreator.createHallway((5 - 1) * 32, 10 * 32 - 5 * 32, 10, 5, WEST);
+//        entityCreator.createHallway((5 - 1) * 32 + 5 * 32, 10 * 32 - (5 - 1) * 32 - 10 * 32, 5, 10,NORTH);
+        playerEntity = entityCreator.createPlayer();
+        cameraEntity = entityCreator.createCamera(playerEntity);
+        Entity enemyEntity = entityCreator.createEnemy();
+
+        // Instantiate systems
+        CameraSystem cameraSystem = new CameraSystem();
+        RenderingSystem renderingSystem = new RenderingSystem(game.batch, cameraEntity);
+        DebugCollisionSystem debugCollisionSystem = new DebugCollisionSystem(cameraEntity);
         MovementSystem movementSystem = new MovementSystem();
         AttackSystem attackSystem = new AttackSystem(engine);
         CollisionSystem collisionSystem = new CollisionSystem();
+        engine.addSystem(cameraSystem);
         engine.addSystem(renderingSystem);
+        engine.addSystem(debugCollisionSystem);
         engine.addSystem(movementSystem);
         engine.addSystem(attackSystem);
         engine.addSystem(collisionSystem);
 
-        entityCreator = new EntityCreator(engine);
-        playerEntity = entityCreator.createPlayer();
-        Entity enemyEntity = entityCreator.createEnemy();
-
         textureMapper = ComponentMapper.getFor(TextureComponent.class);
         playerMapper = ComponentMapper.getFor(PlayerComponent.class);
 
-        this.setInputProcessor();
+        pickInputProcessor();
 
         // load sound effects and start music
         ambientMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         ambientMusic.setLooping(true);
 
-        camera = renderingSystem.getCamera();
-        viewport = renderingSystem.getViewport();
+        camera = cameraEntity.getComponent(CameraComponent.class).camera;
+        viewport = cameraEntity.getComponent(CameraComponent.class).viewport;
     }
 
     @Override
@@ -96,16 +106,11 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // ecs render sprites
-        // NOTE: to have ECS architecture rendered, comment out the non-esc render sprites section
         engine.update(delta);
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            dispose();
-            game.setScreen(new GameScreen(game));
+            resetLevel();
         }
-
-        // NOTE: Changing some attributes before rendering and others after can cause weird jitter effects
-        //   and inconsistencies. Render first, update state afterwards.
     }
 
     @Override
@@ -141,7 +146,7 @@ public class GameScreen implements Screen {
         game.setScreen(new GameScreen(game));
     }
 
-    private void setInputProcessor() {
+    private void pickInputProcessor() {
         // Do application based setup
         Application.ApplicationType appType = app.getType();
         switch (appType) {
@@ -149,7 +154,7 @@ public class GameScreen implements Screen {
                 Gdx.input.setInputProcessor(new AndroidGameInputProcessor(player));
                 break;
             case Desktop:
-                Gdx.input.setInputProcessor(new DesktopInputProcessorSystem(playerEntity));
+                Gdx.input.setInputProcessor(new DesktopInputProcessor(playerEntity));
                 break;
             case HeadlessDesktop:
                 Gdx.input.setInputProcessor(new InputAdapter());
