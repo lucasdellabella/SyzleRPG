@@ -153,8 +153,8 @@ public class EntityCreator {
         for (int i = 0; room == null && i < retryAttempts; i++) {
             int w = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
             int h = MathUtils.random(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
-            int x = MathUtils.random(mapWidth - w - 1) * 32;
-            int y = MathUtils.random(mapHeight - h - 1) * 32;
+            int x = MathUtils.random(mapWidth - w - 1);
+            int y = MathUtils.random(mapHeight - h - 1);
 
             if (overlapsNoOtherRoom(x, y, w, h)) {
                 room = createRoom(x, y, w, h);
@@ -175,7 +175,7 @@ public class EntityCreator {
     private boolean overlapsNoOtherRoom(int x, int y, int width, int height) {
         // finds whether our room intersects with any other room
         boolean intersection = false;
-        Rectangle roomBounds = new Rectangle(x, y, width * 32, height * 32);
+        Rectangle roomBounds = new Rectangle(x * 32, y * 32, width * 32, height * 32);
         Rectangle otherBounds;
         for (Entity otherRoom: rooms) {
             otherBounds = boundsM.get(otherRoom).getBoundingRectangle();
@@ -191,14 +191,16 @@ public class EntityCreator {
 
     /**
      * Create a room entity
-     * TODO: Make all arguments in number of tiles?
-     * @param xPos the xPos in pixels
-     * @param yPos the yPos in pixels
+     * @param xPos the xPos in tiles
+     * @param yPos the yPos in tiles
      * @param width the width in number of tiles
      * @param height the height in number of tiles
      * @return
      */
     public Entity createRoom(int xPos, int yPos, int width, int height) {
+
+        int pixelXPos = 32 * xPos;
+        int pixelYPos = 32 * yPos;
 
         Entity room = engine.createEntity();
 
@@ -212,7 +214,7 @@ public class EntityCreator {
         RoomComponent roomComponent = engine.createComponent(RoomComponent.class);
 
         // Set component values
-        transformComponent.translate.set(xPos, yPos);
+        transformComponent.translate.set(pixelXPos, pixelYPos);
         tileComponent.tileMatrix[0][1] = textureHolder.getWall(NORTH);
         tileComponent.tileMatrix[2][1] = textureHolder.getWall(SOUTH);
         tileComponent.tileMatrix[1][2] = textureHolder.getWall(EAST);
@@ -264,14 +266,17 @@ public class EntityCreator {
     }
 
     /**
-     * Create a room entity
-     * @param xPos the xPos in pixels
-     * @param yPos the yPos in pixels
+     * Create a room entity that has an opening on one side
+     * @param xPos the xPos in tiles
+     * @param yPos the yPos in tiles
      * @param width the width in number of tiles
      * @param height the height in number of tiles
      * @return
      */
     public Entity createHallway(int xPos, int yPos, int width, int height, WallType opening) {
+
+        int pixelXPos = 32 * xPos;
+        int pixelYPos = 32 * yPos;
 
         Entity room = engine.createEntity();
 
@@ -281,7 +286,7 @@ public class EntityCreator {
         TileComponent tileComponent = engine.createComponent(TileComponent.class);
         RoomComponent roomComponent = engine.createComponent(RoomComponent.class);
 
-        transformComponent.translate.set(xPos, yPos);
+        transformComponent.translate.set(pixelXPos, pixelYPos);
         tileComponent.width = width;
         tileComponent.height = height;
         tileComponent.tileMatrix[1][1] = textureHolder.getWall(FLOOR);
